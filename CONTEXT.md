@@ -1,0 +1,137 @@
+# Project Context (`context.md`)
+
+This document describes the business domain, user roles, relational database schema, and technical logic flow for the DPI Thread Forum.
+
+---
+
+## 👥 User Roles & Permissions
+
+The platform supports two roles with distinct privileges:
+
+### 1. General User
+- **Capabilities:**
+  - Register a new account and log in.
+  - Browse all active threads or filter posts by category using Swiper slide components.
+  - Search posts by keyword (title/content).
+  - Create a new discussion thread with an optional image upload.
+  - Edit or delete their own posts.
+  - Like or unlike threads posted by other users.
+  - Comment on posts with optional image attachments.
+  - Edit or delete their own comments.
+  - Modify their profile details (first name, last name, email, avatar image, and password).
+
+### 2. Administrator
+- **Capabilities:**
+  - Inherits all general user capabilities.
+  - Access user management console to update user details, toggle roles, or delete users.
+  - Manage categories (create new categories, delete inactive categories, update icons).
+  - Publish and manage announcements stored in a local JSON database (displayed on the sidebar announcements widget).
+
+---
+
+## 🗄️ Database Schema & Entities
+
+The platform uses a relational MySQL database named **`dpi_db`** containing the following entities:
+
+```mermaid
+erDiagram
+    USERS ||--o{ POSTS : "creates"
+    USERS ||--o{ COMMENTS : "writes"
+    USERS ||--o{ LIKES : "likes"
+    CATEGORIES ||--o{ POSTS : "groups"
+    POSTS ||--o{ COMMENTS : "contains"
+    POSTS ||--o{ LIKES : "accumulates"
+
+    USERS {
+        int user_id PK
+        string first_name
+        string last_name
+        string email
+        string password
+        string user_img
+        string role
+    }
+
+    CATEGORIES {
+        int category_id PK
+        string category_name
+        string categorie_icon
+    }
+
+    POSTS {
+        int post_id PK
+        string title
+        string content
+        int user_id FK
+        string post_img
+        int category_id FK
+        datetime created_at
+    }
+
+    COMMENTS {
+        int comment_id PK
+        int post_id FK
+        int user_id FK
+        text content
+        string image
+        datetime created_at
+        datetime updated_at
+    }
+
+    LIKES {
+        int user_id PK_FK
+        int post_id PK_FK
+    }
+```
+
+### Table Specifications
+
+#### 1. `users`
+- `user_id` (INT, PK, Auto Increment)
+- `first_name` (VARCHAR)
+- `last_name` (VARCHAR)
+- `email` (VARCHAR, Unique): Login credential.
+- `password` (VARCHAR): Hashed using PHP's `password_hash()`.
+- `user_img` (VARCHAR): Profile picture filename (stored in `uploads/`).
+- `role` (VARCHAR): Roles like `user` or `admin`.
+
+#### 2. `categories`
+- `category_id` (INT, PK, Auto Increment)
+- `category_name` (VARCHAR): Name of the category.
+- `categorie_icon` (VARCHAR): Category icon filename/filepath.
+
+#### 3. `posts`
+- `post_id` (INT, PK, Auto Increment)
+- `title` (VARCHAR): Post title.
+- `content` (TEXT): Post content.
+- `user_id` (INT, FK -> `users.user_id`): Post author.
+- `post_img` (VARCHAR): Optional post image filename.
+- `category_id` (INT, FK -> `categories.category_id`): Linked category.
+- `created_at` (TIMESTAMP): Date and time of creation.
+
+#### 4. `comments`
+- `comment_id` (INT, PK, Auto Increment)
+- `post_id` (INT, FK -> `posts.post_id`)
+- `user_id` (INT, FK -> `users.user_id`): Comment author.
+- `content` (TEXT): Text content of the comment.
+- `image` (VARCHAR): Optional comment image filename.
+- `created_at` (TIMESTAMP)
+- `updated_at` (TIMESTAMP)
+
+#### 5. `likes`
+- Many-to-many relationship mapping table to enforce unique likes per user per post.
+- `user_id` (INT, FK -> `users.user_id`)
+- `post_id` (INT, FK -> `posts.post_id`)
+
+---
+
+## ⚡ Technical Logic Specifications
+
+1. **Admin Announcements widget:**
+   To reduce queries on the primary MySQL database, admin system announcements are stored inside a flat JSON file at [config/posts.json](file:///c:/D/thread/miniproject-Thread/config/posts.json). The backend reads this file via PHP's `file_get_contents()` and renders cards inside the sidebar template `layouts/con4.php`.
+
+2. **AJAX Likes:**
+   Pressing the Like button triggers a POST request to `index.php?page=toggle_like`. The backend toggles the user's like entry in the database and returns a JSON payload containing the updated like count and the toggle action (`like` or `unlike`).
+
+3. **Swiper Integration:**
+   `layouts/category_slide.php` implements the Swiper.js layout for slide elements, which are styled using Vanilla CSS in `styles/category_slidestyle.css` and controlled using `assets/js/script.js`.
