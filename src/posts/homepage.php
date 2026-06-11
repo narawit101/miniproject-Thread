@@ -51,6 +51,11 @@ $popular_posts = $stmt_popular->fetchAll();
 <?php include_once 'layouts/top_layouts.php'; ?>
 <div class="bodyofcontent">
 
+    <!-- Welcome Banner -->
+    <div class="item layoutofcon1 text-center" style="padding: 15px 20px;">
+        <img src="icon/Illustration.png" alt="Welcome to DPI Forum" style="max-width: 100%; max-height: 110px; height: auto; object-fit: contain;">
+    </div>
+
     <div class="item layoutofcon1">
         <?php include_once 'layouts/category_slide.php'; ?>
     </div>
