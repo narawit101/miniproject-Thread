@@ -94,7 +94,7 @@ function uploadAndCompressImage(array $file, string $destination, int $max_width
     // สร้าง canvas สำหรับวาดรูปภาพย่อใหม่
     $target = imagecreatetruecolor($new_width, $new_height);
     if (!$target) {
-        imagedestroy($source);
+        $source = null;
         return move_uploaded_file($tmp_path, $destination);
     }
 
@@ -110,8 +110,8 @@ function uploadAndCompressImage(array $file, string $destination, int $max_width
 
     // ทำการย่อรูปภาพ (Resample)
     if (!imagecopyresampled($target, $source, 0, 0, 0, 0, $new_width, $new_height, $width, $height)) {
-        imagedestroy($source);
-        imagedestroy($target);
+        $source = null;
+        $target = null;
         return move_uploaded_file($tmp_path, $destination);
     }
 
@@ -137,9 +137,9 @@ function uploadAndCompressImage(array $file, string $destination, int $max_width
             break;
     }
 
-    // คืนค่าหน่วยความจำ
-    imagedestroy($source);
-    imagedestroy($target);
+    // คืนค่าหน่วยความจำ (ใน PHP 8+ การเคลียร์ตัวแปรออบเจกต์จะคืนค่าเมมโมรี่แทน imagedestroy)
+    $source = null;
+    $target = null;
 
     // หากบันทึกสำเร็จลุล่วง
     if (!$saved) {

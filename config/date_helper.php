@@ -2,7 +2,7 @@
 date_default_timezone_set('Asia/Bangkok');
 
 if (!function_exists('formatThaiDate')) {
-    function formatThaiDate($datetime, $shortYear = false, $showTime = true) {
+    function formatThaiDate(?string $datetime, bool $shortYear = false, bool $showTime = true): string {
         if (!$datetime) return '';
         $time = strtotime($datetime);
         $thai_months = [

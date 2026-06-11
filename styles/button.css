@@ -120,39 +120,40 @@ button.form-btn.secondary:hover {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    padding: 8px 18px;
-    font-size: 14px;
-    font-weight: 600;
+    width: 38px;
+    height: 38px;
+    font-size: 18px;
     font-family: 'Kanit', sans-serif;
-    border-radius: 20px;
-    border: 1.5px solid #3E7B27;
+    border-radius: 50%;
+    border: 1.5px solid rgba(18, 53, 36, 0.18);
     background-color: transparent;
-    color: #3E7B27;
+    color: #718096;
     cursor: pointer;
-    transition: all 0.25s ease;
-    margin-right: 5px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-right: 8px;
     margin-bottom: 5px;
-    min-width: 110px;
     vertical-align: middle;
+    outline: none;
 }
 
 .btn-like:hover {
-    background-color: #3E7B27;
-    color: #ffffff;
-    box-shadow: 0 3px 10px rgba(62, 123, 39, 0.25);
+    background-color: rgba(229, 62, 62, 0.08);
+    border-color: #e53e3e;
+    color: #e53e3e;
+    transform: scale(1.08);
 }
 
 .btn-like.liked {
-    background-color: #123524;
-    border-color: #123524;
-    color: #ffffff;
+    background-color: rgba(229, 62, 62, 0.12);
+    border-color: #e53e3e;
+    color: #e53e3e;
 }
 
 .btn-like.liked:hover {
-    background-color: #e53e3e;
-    border-color: #e53e3e;
-    color: #ffffff;
+    background-color: rgba(229, 62, 62, 0.2);
+    border-color: #c53030;
+    color: #c53030;
+    transform: scale(0.95);
 }
 
 /* ── Like count ───────────────────────────────── */
@@ -161,4 +162,5 @@ button.form-btn.secondary:hover {
     font-size: 13px;
     color: #555;
     margin: 4px 0 8px 2px;
+    vertical-align: middle;
 }

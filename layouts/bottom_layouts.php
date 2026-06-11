@@ -129,12 +129,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(function(data) {
                     if (data.action === 'unlike') {
                         // ผู้ใช้เพิ่งกดไลค์ → แสดงสถานะ "ไลค์แล้ว"
-                        btn.innerHTML = '♥ ยกเลิกไลค์';
+                        btn.innerHTML = '♥ ';
                         btn.value = 'unlike';
                         btn.classList.add('liked');
                     } else {
                         // ผู้ใช้เพิ่งยกเลิกไลค์ → แสดงสถานะ "ยังไม่ได้ไลค์"
-                        btn.innerHTML = '♡ ไลค์';
+                        btn.innerHTML = '♡';
                         btn.value = 'like';
                         btn.classList.remove('liked');
                     }

@@ -115,12 +115,12 @@ $popular_posts = $stmt_popular->fetchAll();
                     <input type="hidden" name="post_id" value="<?= $post_id ?>">
 
                     <?php if ($like): ?>
-                        <button type="submit" name="action" value="unlike" class="btn-like liked">
-                            ♥ ยกเลิกไลค์
+                        <button type="submit" name="action" value="unlike" class="btn-like liked" title="ยกเลิกถูกใจ">
+                            ♥
                         </button>
                     <?php else: ?>
-                        <button type="submit" name="action" value="like" class="btn-like">
-                            ♡ ไลค์
+                        <button type="submit" name="action" value="like" class="btn-like" title="ถูกใจ">
+                            ♡
                         </button>
                     <?php endif; ?>
                 </form>
