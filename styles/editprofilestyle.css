@@ -129,7 +129,7 @@ input[type="file"] {
 .submit-button,
 .edit-button {
     background-color: #123524;
-    color: #F4FFC3;
+    color: #ffffff;
     border-color: #123524;
 }
 
@@ -157,8 +157,6 @@ input[type="file"] {
     background-color: transparent;
     border-color: #3E7B27;
     color: #3E7B27;
-    margin-top: 15px;
-    width: 100%;
     box-sizing: border-box;
 }
 

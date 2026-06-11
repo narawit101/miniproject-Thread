@@ -47,7 +47,8 @@ input[type="file"] {
 }
 
 /* Image preview box */
-#imagePreview {
+#imagePreview,
+.admin-img-preview {
     max-width: 100%;
     max-height: 250px;
     border-radius: 8px;
@@ -81,7 +82,7 @@ input[type="file"] {
     transition: all 0.3s ease;
     border: 2px solid #123524;
     background-color: #123524;
-    color: #F4FFC3;
+    color: #ffffff;
 }
 
 .button-group button:hover {
@@ -112,69 +113,108 @@ input[type="file"] {
 /* News cards & Announcement Sidebar widget styling */
 .insidecon4 {
     margin: 10px 0;
-    padding: 15px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgba(18, 53, 36, 0.08);
+    padding: 20px;
+    border-radius: 16px;
+    background: #ffffff;
+    border: 1px solid rgba(18, 53, 36, 0.06);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+.announce-widget-header {
+    border-bottom: 2px solid rgba(62, 123, 39, 0.1);
+    padding-bottom: 12px;
+}
+
+.announce-header-icon {
+    color: #3E7B27;
+    font-size: 24px;
 }
 
 .insidecon4 h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 1.25rem;
+    text-align: left;
+    margin: 0;
+    font-size: 1.15rem;
     font-weight: 700;
     color: #123524;
-    border-bottom: 2px solid rgba(18, 53, 36, 0.1);
-    padding-bottom: 8px;
+    border: none;
+    padding-bottom: 0;
 }
 
 .news-wrapper {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 15px;
 }
 
 .news-card {
     border-radius: 12px;
     background-color: #ffffff;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
-    border: 1px solid rgba(18, 53, 36, 0.06);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(18, 53, 36, 0.08);
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     width: 100%;
-    max-width: 320px;
+    max-width: none;
 }
 
 .news-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(18, 53, 36, 0.1);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(18, 53, 36, 0.08);
+    border-color: rgba(62, 123, 39, 0.3);
+}
+
+.news-card-img-wrap {
+    width: 100%;
+    height: 120px;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(18, 53, 36, 0.06);
 }
 
 .news-card img {
     width: 100%;
-    height: 180px;
+    height: 100%;
     object-fit: cover;
     display: block;
-    border-bottom: 1.5px solid rgba(18, 53, 36, 0.08);
+    transition: transform 0.5s ease;
+}
+
+.news-card:hover .news-card-img-wrap img {
+    transform: scale(1.06);
 }
 
 .news-content {
-    padding: 15px;
+    padding: 14px;
     background-color: #ffffff;
 }
 
+.news-meta {
+    color: #85A947;
+    font-size: 11px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.news-meta-icon {
+    font-size: 13px !important;
+}
+
+.news-date {
+    line-height: 1;
+    white-space: nowrap;
+}
+
 .news-title {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     line-height: 1.4;
 }
 
 .news-title a {
     text-decoration: none;
     color: #123524;
-    transition: color 0.3s ease;
+    transition: color 0.2s ease;
 }
 
 .news-title a:hover {
@@ -182,66 +222,34 @@ input[type="file"] {
 }
 
 .news-description {
-    font-size: 14px;
-    color: #3E7B27;
-    margin-bottom: 15px;
-    line-height: 1.6;
+    font-size: 12.5px;
+    color: #556B2F;
+    margin-bottom: 10px;
+    line-height: 1.5;
 }
 
 .news-time {
-    font-size: 12px;
+    font-size: 11px;
     color: #85A947;
     margin-bottom: 10px;
 }
 
-.news-content button {
-    padding: 6px 12px;
-    font-family: 'Kanit', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border-radius: 15px;
-    border: 1.5px solid #123524;
-    background-color: #123524;
-    color: #F4FFC3;
-    margin-right: 5px;
-}
-
-.news-content button:hover {
-    background-color: #3E7B27;
-    border-color: #3E7B27;
-    color: #ffffff;
-}
-
-.news-content button[onclick*="deletePost"] {
-    background-color: transparent;
-    border-color: #e53e3e;
-    color: #e53e3e;
-}
-
-.news-content button[onclick*="deletePost"]:hover {
-    background-color: #e53e3e;
-    color: #ffffff;
-}
-
-/* Placeholder header for announcements without images */
-.news-no-image-header {
-    height: 100px;
-    background: linear-gradient(135deg, #3E7B27, #123524);
-    border-bottom: 1.5px solid rgba(18, 53, 36, 0.08);
-}
-
-.news-no-image-header .material-symbols-outlined {
-    font-size: 36px;
-    color: #F4FFC3 !important;
-    opacity: 0.8;
-}
-
 /* Edit & Delete Specific Announcement Buttons */
+.news-admin-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(18, 53, 36, 0.08);
+}
+
 .btn-edit-announce,
 .btn-delete-announce {
-    padding: 6px 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px 14px;
     font-family: 'Kanit', sans-serif;
     font-size: 13px;
     font-weight: 600;
@@ -249,19 +257,25 @@ input[type="file"] {
     border-radius: 20px;
     transition: all 0.25s ease;
     outline: none;
-    display: inline-block;
+    height: 32px;
+    border-width: 1.5px !important;
 }
 
 .btn-edit-announce {
-    background-color: #123524 !important;
-    border: 1.5px solid #123524 !important;
-    color: #F4FFC3 !important;
+    background-color: transparent !important;
+    border: 1.5px solid #3E7B27 !important;
+    color: #3E7B27 !important;
+}
+
+.btn-edit-announce .material-symbols-outlined,
+.btn-delete-announce .material-symbols-outlined {
+    font-size: 15px !important;
 }
 
 .btn-edit-announce:hover {
     background-color: #3E7B27 !important;
-    border-color: #3E7B27 !important;
     color: #ffffff !important;
+    box-shadow: 0 3px 8px rgba(62, 123, 39, 0.2);
 }
 
 .btn-delete-announce {
@@ -272,7 +286,29 @@ input[type="file"] {
 
 .btn-delete-announce:hover {
     background-color: #e53e3e !important;
+    border-color: #e53e3e !important;
     color: #ffffff !important;
+    box-shadow: 0 3px 8px rgba(229, 62, 62, 0.2);
+}
+
+/* Announcement detail page */
+.announce-detail-card {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 30px;
+}
+.announce-detail-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+.announce-detail-desc {
+    font-size: 16px;
+    color: #123524;
+    line-height: 1.6;
+    white-space: pre-wrap;
 }
 
 

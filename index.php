@@ -1,6 +1,8 @@
 <?php
 session_start();
 require_once 'config/server.php';
+require_once 'config/image_helper.php';
+require_once 'config/date_helper.php';
 
 // Get page from query string, default to homepage
 $page = $_GET['page'] ?? 'homepage';

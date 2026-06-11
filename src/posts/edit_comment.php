@@ -51,14 +51,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['delete_image'])) { //
     // จัดการการอัปโหลดรูปภาพใหม่
     $image = $comment['image']; // ใช้รูปภาพเดิมเป็นค่าเริ่มต้น
     if (isset($_FILES['image']) && $_FILES['image']['error'] == UPLOAD_ERR_OK) {
+        if (!validateUploadedFileSize($_FILES['image'], 5)) {
+            set_swal('error', 'อัปโหลดไม่สำเร็จ!', 'ขนาดรูปภาพต้องไม่เกิน 5MB');
+            header("Location: index.php?page=edit_comment&comment_id=$comment_id");
+            exit();
+        }
         // หากมีการอัปโหลดรูปภาพใหม่
-        if (!empty($comment['image'])) {
+        if (!empty($comment['image']) && file_exists("uploads/" . $comment['image'])) {
             // ลบรูปภาพเดิมออกจากเซิร์ฟเวอร์
             unlink("uploads/" . $comment['image']);
         }
-        $image = $_FILES['image']['name'];
-        $target = "uploads/" . basename($image);
-        move_uploaded_file($_FILES['image']['tmp_name'], $target);
+        $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+        $image = 'comment_' . uniqid() . '.' . $ext;
+        $target = "uploads/" . $image;
+        if (!uploadAndCompressImage($_FILES['image'], $target, 1000, 75)) {
+            $image = $comment['image']; // หากล้มเหลวให้ใช้รูปภาพเดิม
+        }
     }
 
     // อัปเดตคอมเมนต์ในฐานข้อมูล
@@ -74,46 +82,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['delete_image'])) { //
 <!-- รวมส่วนหัวของ HTML -->
 <?php include_once 'layouts/top_layouts.php'; ?>
 
-<div class="bodyofcontent">
-    <div class="item layoutofcon3">
-        <h1>แก้ไขคอมเมนต์</h1>
-        <div class="insidecon3">
-            <form method="POST" action="" enctype="multipart/form-data" class="mt-3">
-                <div class="mb-3">
-                    <label for="content" class="form-label font-weight-bold">เนื้อหาคอมเมนต์:</label>
-                    <textarea name="content" id="content" class="form-control" rows="5" required><?= htmlspecialchars($comment['content']) ?></textarea>
-                </div>
-                
-                <?php if (!empty($comment['image'])): ?>
-                    <div class="mb-3">
-                        <p class="form-label font-weight-bold">รูปภาพเดิม:</p>
-                        <div class="mb-2">
-                            <img src="uploads/<?= htmlspecialchars($comment['image']) ?>" alt="Comment Image" class="img-thumbnail" style="max-width: 250px; height: auto;">
-                        </div>
-                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDeleteImage()">ลบรูปภาพเดิม</button>
-                    </div>
-                <?php endif; ?>
-
-                <div class="mb-3">
-                    <label for="image" class="form-label font-weight-bold">อัปโหลดรูปภาพใหม่ (ถ้ามี):</label>
-                    <input type="file" name="image" id="image" class="form-control" accept="image/*" onchange="previewImage(event)">
-                    <div class="mt-2">
-                        <img id="image-preview" class="img-thumbnail" style="display: none; max-width: 250px; height: auto;">
-                    </div>
-                    <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="clearImage()">ยกเลิกการเลือกภาพ</button>
-                </div>
-
-                <div class="d-flex gap-2 mt-4">
-                    <button type="submit" class="btn btn-primary">อัปเดตคอมเมนต์</button>
-                    <button type="button" class="btn btn-outline-primary" onclick="window.location.href='index.php?page=post&post_id=<?= $post_id ?>'">ย้อนกลับ</button>
-                </div>
-            </form>
+<div class="single-card-layout">
+    <h1>แก้ไขคอมเมนต์</h1>
+    <form method="POST" action="" enctype="multipart/form-data" class="mt-3">
+        <div class="mb-3">
+            <label for="content" class="form-label font-weight-bold">เนื้อหาคอมเมนต์:</label>
+            <textarea name="content" id="content" class="form-control" rows="5" required><?= htmlspecialchars($comment['content']) ?></textarea>
         </div>
-    </div>
-    
-    <div class="item layoutofcon4">
-        <?php include_once 'layouts/con4.php'; ?>
-    </div>
+        
+        <?php if (!empty($comment['image'])): ?>
+            <div class="mb-3">
+                <p class="form-label font-weight-bold">รูปภาพเดิม:</p>
+                <div class="mb-2">
+                    <img src="uploads/<?= htmlspecialchars($comment['image']) ?>" alt="Comment Image" class="img-thumbnail post-create-preview">
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDeleteImage()">ลบรูปภาพเดิม</button>
+            </div>
+        <?php endif; ?>
+
+        <div class="mb-3">
+            <label for="image" class="form-label font-weight-bold">อัปโหลดรูปภาพใหม่ (ถ้ามี):</label>
+            <input type="file" name="image" id="image" class="form-control" accept="image/*" onchange="previewImage(event)">
+            <div class="mt-2">
+                <img id="image-preview" class="img-thumbnail post-create-preview" style="display: none;">
+            </div>
+            <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="clearImage()">ยกเลิกการเลือกภาพ</button>
+        </div>
+
+        <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary">อัปเดตคอมเมนต์</button>
+            <button type="button" class="btn btn-outline-primary" onclick="window.location.href='index.php?page=post&post_id=<?= $post_id ?>'">ย้อนกลับ</button>
+        </div>
+    </form>
 </div>
 
 <!-- รวมส่วนท้ายของ HTML -->

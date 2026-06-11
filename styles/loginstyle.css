@@ -42,20 +42,21 @@ body {
     margin-bottom: 25px;
 }
 
-/* Custom Bootstrap Form Control Overrides */
+/* Custom Bootstrap Form Control Overrides (Premium Rounded Card Style) */
 .form-floating > .form-control {
-    border: 2px solid rgba(62, 123, 39, 0.3);
-    border-radius: 10px;
-    background-color: rgba(255, 255, 255, 0.7);
+    border: 1.5px solid rgba(18, 53, 36, 0.12) !important;
+    border-radius: 12px !important;
+    background-color: rgba(255, 255, 255, 0.75) !important;
     color: #123524;
     font-weight: 500;
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
+    box-shadow: none !important;
 }
 
 .form-floating > .form-control:focus {
-    background-color: #ffffff;
-    border-color: #3E7B27;
-    box-shadow: 0 0 0 0.25rem rgba(62, 123, 39, 0.2);
+    background-color: #ffffff !important;
+    border-color: #3E7B27 !important;
+    box-shadow: 0 0 0 4px rgba(62, 123, 39, 0.15) !important;
 }
 
 .form-floating > label {
@@ -87,13 +88,13 @@ body {
     text-decoration: underline;
 }
 
-/* Custom Theme Button */
+/* Custom Theme Button (Strictly following DESIGN.md 3.2) */
 .btn-auth-primary {
     position: relative;
     width: 100%;
     height: 48px;
     background: #123524;
-    border: none;
+    border: 2px solid #123524;
     border-radius: 40px;
     cursor: pointer;
     font-size: 18px;
@@ -104,7 +105,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.5s, color 0.5s;
     box-shadow: 0 4px 10px rgba(18, 53, 36, 0.3);
 }
 
@@ -127,6 +128,7 @@ body {
 .btn-auth-primary:hover {
     color: #F4FFC3;
     box-shadow: 0 6px 15px rgba(18, 53, 36, 0.4);
+    border-color: #3E7B27;
 }
 
 .btn-auth-primary:active {

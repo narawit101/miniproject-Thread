@@ -25,6 +25,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // ตรวจสอบการลบรูปภาพ
     if (isset($_POST['delete_profile_pic'])) {
+        $old_img = $user['user_img'];
+        if ($old_img && $old_img !== 'logo.png' && file_exists('uploads/' . $old_img)) {
+            @unlink('uploads/' . $old_img);
+        }
         $default_image ='logo.png';
         $stmt = $conn->prepare("UPDATE users SET user_img = ? WHERE user_id = ?");
         $stmt->execute([$default_image, $user_id]);
@@ -32,15 +36,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // ตรวจสอบการอัปโหลดรูปภาพ
     if (isset($_FILES['profile_pic']) && $_FILES['profile_pic']['error'] == 0) {
-        $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+        if (!validateUploadedFileSize($_FILES['profile_pic'], 3)) {
+            set_swal('error', 'อัปโหลดไม่สำเร็จ!', 'ขนาดรูปโปรไฟล์ต้องไม่เกิน 3MB');
+            header('Location: index.php?page=edit_profile');
+            exit();
+        }
+        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
         $filename = $_FILES['profile_pic']['name'];
-        $filetype = pathinfo($filename, PATHINFO_EXTENSION);
+        $filetype = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
-        if (in_array(strtolower($filetype), $allowed)) {
+        if (in_array($filetype, $allowed)) {
             $new_filename = uniqid() . '.' . $filetype;
             $upload_dir = 'uploads/';
+            $target = $upload_dir . $new_filename;
 
-            if (move_uploaded_file($_FILES['profile_pic']['tmp_name'], $upload_dir . $new_filename)) {
+            if (uploadAndCompressImage($_FILES['profile_pic'], $target, 400, 75)) {
+                // ลบรูปเก่าออกจากเซิร์ฟเวอร์
+                $old_img = $user['user_img'];
+                if ($old_img && $old_img !== 'logo.png' && file_exists('uploads/' . $old_img)) {
+                    @unlink('uploads/' . $old_img);
+                }
                 // อัปเดตชื่อไฟล์รูปภาพในฐานข้อมูล
                 $stmt = $conn->prepare("UPDATE users SET user_img = ? WHERE user_id = ?");
                 $stmt->execute([$new_filename, $user_id]);
@@ -55,7 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 <?php include_once 'layouts/top_layouts.php'; ?>
-    <link rel="stylesheet" href="styles/editprofilestyle.css">
 <script>
     function previewImage(event) {
         const reader = new FileReader();
@@ -66,65 +80,60 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         reader.readAsDataURL(event.target.files[0]);
     }
 </script>
-</head>
 
-<body>
-    <div class="edit-profile-container">
-        <h1>แก้ไขโปรไฟล์</h1>
+<div class="edit-profile-container">
+    <h1>แก้ไขโปรไฟล์</h1>
 
-        <form action="index.php?page=edit_profile" method="POST" enctype="multipart/form-data" class="mt-3">
-            <div class="mb-3">
-                <label for="first_name" class="form-label font-weight-bold">ชื่อ:</label>
-                <input type="text" id="first_name" name="first_name" class="form-control"
-                    value="<?= htmlspecialchars($user['first_name']) ?>" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="last_name" class="form-label font-weight-bold">นามสกุล:</label>
-                <input type="text" id="last_name" name="last_name" class="form-control" value="<?= htmlspecialchars($user['last_name']) ?>"
-                    required>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label font-weight-bold">รหัสผ่านบัญชีผู้ใช้:</label>
-                <div>
-                    <a href="index.php?page=edit_password" class="btn btn-outline-primary btn-sm">เปลี่ยนรหัสผ่าน</a>
+    <form action="index.php?page=edit_profile" method="POST" enctype="multipart/form-data" class="mt-3">
+        <!-- 1. รูปภาพโปรไฟล์ปัจจุบัน (แสดงเด่นชัดด้านบนสุด) -->
+        <div class="mb-4 text-center">
+            <?php if (!empty($user['user_img']) && file_exists('uploads/' . $user['user_img'])): ?>
+                <img src="uploads/<?php echo htmlspecialchars($user['user_img']); ?>" alt="Profile image" class="profile-picc" style="margin-bottom: 10px;">
+                <div class="mt-2">
+                    <button type="submit" name="delete_profile_pic" class="btn btn-outline-danger btn-sm">ลบรูปโปรไฟล์ปัจจุบัน</button>
                 </div>
-            </div>
+            <?php else: ?>
+                <img src="icon/startprofile.png" alt="Default profile image" class="profile-picc" style="margin-bottom: 10px; border-color: #718096;">
+            <?php endif; ?>
+        </div>
 
-            <div class="mb-3">
-                <label for="profile_pic" class="form-label font-weight-bold">เปลี่ยนรูปโปรไฟล์:</label>
-                <input type="file" id="profile_pic" name="profile_pic" class="form-control" accept="image/*" onchange="previewImage(event)">
-                <div class="mt-3 text-center">
-                    <img id="preview" src="#" alt="ตัวอย่างรูปโปรไฟล์ใหม่" class="img-thumbnail rounded-circle" style="display: none; width: 120px; height: 120px; object-fit: cover; border: 3px solid #85A947;">
-                </div>
-            </div>
+        <div class="mb-3">
+            <label for="first_name" class="form-label font-weight-bold">ชื่อ:</label>
+            <input type="text" id="first_name" name="first_name" class="form-control"
+                value="<?= htmlspecialchars($user['first_name']) ?>" required>
+        </div>
 
-            <div class="mb-3 text-center">
-                <p class="form-label font-weight-bold text-start">รูปภาพโปรไฟล์ปัจจุบัน:</p>
-                <?php if (!empty($user['user_img']) && file_exists('uploads/' . $user['user_img'])): ?>
-                    <img src="uploads/<?php echo htmlspecialchars($user['user_img']); ?>" alt="Profile image" class="img-thumbnail rounded-circle" style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #123524;">
-                    <div class="mt-2">
-                        <button type="submit" name="delete_profile_pic" class="btn btn-outline-danger btn-sm">ลบรูปโปรไฟล์ปัจจุบัน</button>
-                    </div>
-                <?php else: ?>
-                    <img src="icon/startprofile.png" alt="Default profile image" class="img-thumbnail rounded-circle" style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #718096;">
-                <?php endif; ?>
-            </div>
+        <div class="mb-3">
+            <label for="last_name" class="form-label font-weight-bold">นามสกุล:</label>
+            <input type="text" id="last_name" name="last_name" class="form-control" value="<?= htmlspecialchars($user['last_name']) ?>"
+                required>
+        </div>
 
-            <div class="d-flex gap-2 mt-4">
-                <button type="submit" class="btn btn-primary w-100">บันทึกการเปลี่ยนแปลง</button>
-                <a href="index.php?page=profile" class="btn btn-secondary w-100">ยกเลิก</a>
+        <div class="mb-3">
+            <label class="form-label font-weight-bold">รหัสผ่านบัญชีผู้ใช้:</label>
+            <div>
+                <a href="index.php?page=edit_password" class="btn btn-outline-primary w-100">เปลี่ยนรหัสผ่าน</a>
             </div>
-        </form>
-    </div>
-    <script>
-        document.getElementById('profile_pic').addEventListener('change', function (event) {
-            const preview = document.getElementById('preview');
-            preview.style.display = 'block';
-        });
-    </script>
-</body>
+        </div>
 
-</html>
+        <div class="mb-3">
+            <label for="profile_pic" class="form-label font-weight-bold">เปลี่ยนรูปโปรไฟล์:</label>
+            <input type="file" id="profile_pic" name="profile_pic" class="form-control" accept="image/*" onchange="previewImage(event)">
+            <div class="mt-3 text-center">
+                <img id="preview" src="#" alt="ตัวอย่างรูปโปรไฟล์ใหม่" class="img-thumbnail rounded-circle" style="display: none; width: 120px; height: 120px; object-fit: cover; border: 3px solid #85A947; margin: 0 auto;">
+            </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary w-100">บันทึกการเปลี่ยนแปลง</button>
+            <a href="index.php?page=profile" class="btn btn-outline-primary w-100">ยกเลิก</a>
+        </div>
+    </form>
+</div>
+<script>
+    document.getElementById('profile_pic').addEventListener('change', function (event) {
+        const preview = document.getElementById('preview');
+        preview.style.display = 'block';
+    });
+</script>
 <?php include_once 'layouts/bottom_layouts.php'; ?>

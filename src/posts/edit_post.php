@@ -59,10 +59,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // ตรวจสอบว่ามีการอัปโหลดรูปภาพใหม่
     if (!empty($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+        if (!validateUploadedFileSize($_FILES['image'], 5)) {
+            set_swal('error', 'อัปโหลดไม่สำเร็จ!', 'ขนาดรูปภาพต้องไม่เกิน 5MB');
+            header('Location: index.php?page=edit_post&post_id=' . $post_id);
+            exit();
+        }
         $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
         $new_img_name = 'post_' . uniqid() . '.' . $ext;
         $target = 'uploads/posts/' . $new_img_name;
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
+        if (uploadAndCompressImage($_FILES['image'], $target, 1200, 75)) {
             // ลบรูปภาพเก่าถ้ามีการอัปโหลดรูปใหม่
             if ($post['post_img'] && file_exists('uploads/posts/' . $post['post_img'])) {
                 unlink('uploads/posts/' . $post['post_img']);
@@ -102,71 +107,72 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <?php include_once 'layouts/top_layouts.php'; ?>
 
-<div class="bodyofcontent">
-
-    <div class="item layoutofcon3">
-        <div class="insidecreatepost">
-            <div class="boxofpost">
-                <h1>แก้ไขกระทู้</h1>
-                <!-- HTML Form -->
-                <form id="postForm" method="POST" enctype="multipart/form-data" class="mt-3">
-                    <div class="mb-3">
-                        <label for="title" class="form-label font-weight-bold">หัวข้อกระทู้:</label>
-                        <input type="text" id="title" name="title" class="form-control"
-                            value="<?= htmlspecialchars($post['title']) ?>" placeholder="หัวข้อกระทู้" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="content" class="form-label">เนื้อหากระทู้:</label>
-                        <textarea id="content" name="content" class="form-control" rows="5" placeholder="เนื้อหากระทู้"
-                            required><?= htmlspecialchars($post['content']) ?></textarea>
-                    </div>
-
-                    <!-- แสดงรูปภาพปัจจุบันและให้ตัวเลือกในการลบ -->
-                    <div class="mb-3">
-                        <?php if (!empty($post['post_img'])): ?>
-                        <div class="mb-2">
-                            <img id="preview" src="uploads/posts/<?= htmlspecialchars($post['post_img']) ?>"
-                                alt="รูปภาพที่อัปโหลด" class="img-thumbnail" style="max-width: 100%; height: auto;">
-                            <input type="hidden" name="delete_image" id="delete_image" value="0">
-                            <button type="button" class="btn btn-sm btn-danger mt-2 d-block"
-                                onclick="deleteImage()">ลบรูปภาพนี้</button>
-                        </div>
-                        <?php else: ?>
-                        <div class="mb-2">
-                            <img id="preview" src="#" alt="ตัวอย่างรูปภาพ" class="img-thumbnail"
-                                style="display: none; max-width: 100%; height: auto;">
-                        </div>
-                        <?php endif; ?>
-                    </div>
-
-                    <!-- ช่องเพิ่มรูปภาพใหม่ -->
-                    <div class="mb-3">
-                        <label for="image" class="form-label">อัปโหลดรูปใหม่ (ถ้ามี):</label>
-                        <input type="file" name="image" id="image" class="form-control" accept="image/*"
-                            onchange="previewImage(event)">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="category_id" class="form-label">เลือกหมวดหมู่:</label>
-                        <select id="category_id" name="category_id" class="form-select" required>
-                            <option value="">เลือกหมวดหมู่</option>
-                            <?php foreach ($categories as $category): ?>
-                            <option value="<?= $category['category_id'] ?>"
-                                <?= ($category['category_id'] == $post['category_id']) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($category['category_name']) ?>
-                            </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <div class="d-flex gap-2 mt-4">
-                        <button type="submit" class="btn btn-primary">บันทึกการแก้ไข</button>
-                        <button type="button" class="btn btn-outline-primary" onclick="history.back()">ย้อนกลับ</button>
-                    </div>
-                </form>
+<div class="single-card-layout">
+    <div class="boxofpost">
+        <h1>แก้ไขกระทู้</h1>
+        <!-- HTML Form -->
+        <form id="postForm" method="POST" enctype="multipart/form-data" class="mt-3">
+            <div class="mb-3">
+                <label for="title" class="form-label font-weight-bold">หัวข้อกระทู้:</label>
+                <input type="text" id="title" name="title" class="form-control"
+                    value="<?= htmlspecialchars($post['title']) ?>" placeholder="หัวข้อกระทู้" required>
             </div>
-        </div>
+
+            <div class="mb-3">
+                <label for="content" class="form-label">เนื้อหากระทู้:</label>
+                <textarea id="content" name="content" class="form-control" rows="5" placeholder="เนื้อหากระทู้"
+                    required><?= htmlspecialchars($post['content']) ?></textarea>
+            </div>
+
+            <!-- แสดงรูปภาพปัจจุบันและให้ตัวเลือกในการลบ -->
+            <div class="mb-3">
+                <?php if (!empty($post['post_img'])): ?>
+                <div class="mb-2">
+                    <?php
+                    $post_img_path = 'uploads/posts/' . $post['post_img'];
+                    if (!file_exists($post_img_path) && file_exists('uploads/' . $post['post_img'])) {
+                        $post_img_path = 'uploads/' . $post['post_img'];
+                    }
+                    ?>
+                    <img id="preview" src="<?= htmlspecialchars($post_img_path) ?>"
+                        alt="รูปภาพที่อัปโหลด" class="img-thumbnail post-create-preview">
+                    <input type="hidden" name="delete_image" id="delete_image" value="0">
+                    <button type="button" class="btn btn-sm btn-outline-danger mt-2 d-block"
+                        onclick="deleteImage()">ลบรูปภาพนี้</button>
+                </div>
+                <?php else: ?>
+                <div class="mb-2">
+                    <img id="preview" src="#" alt="ตัวอย่างรูปภาพ" class="img-thumbnail post-create-preview"
+                        style="display: none;">
+                </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- ช่องเพิ่มรูปภาพใหม่ -->
+            <div class="mb-3">
+                <label for="image" class="form-label">อัปโหลดรูปใหม่ (ถ้ามี):</label>
+                <input type="file" name="image" id="image" class="form-control" accept="image/*"
+                    onchange="previewImage(event)">
+            </div>
+
+            <div class="mb-3">
+                <label for="category_id" class="form-label">เลือกหมวดหมู่:</label>
+                <select id="category_id" name="category_id" class="form-select" required>
+                    <option value="">เลือกหมวดหมู่</option>
+                    <?php foreach ($categories as $category): ?>
+                    <option value="<?= $category['category_id'] ?>"
+                        <?= ($category['category_id'] == $post['category_id']) ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($category['category_name']) ?>
+                    </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-primary">บันทึกการแก้ไข</button>
+                <button type="button" class="btn btn-outline-primary" onclick="history.back()">ย้อนกลับ</button>
+            </div>
+        </form>
     </div>
 </div>
 

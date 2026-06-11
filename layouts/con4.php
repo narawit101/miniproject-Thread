@@ -26,7 +26,11 @@ $current_page = $_GET['page'] ?? 'homepage';
 </script>
 
 <div class="insidecon4">
-    <h2>ประกาศ</h2>
+    <div class="announce-widget-header d-flex align-items-center gap-2 mb-3">
+        <span class="material-symbols-outlined announce-header-icon">campaign</span>
+        <h2>ประกาศ</h2>
+    </div>
+    
     <div class="news-wrapper">
         <?php
         global $conn;
@@ -73,15 +77,20 @@ $current_page = $_GET['page'] ?? 'homepage';
         if (is_array($announcements) && !empty($announcements)) {
             foreach ($announcements as $announce) {
                 $announce_id = $announce['announcement_id'];
-                echo '<div class="news-card d-flex flex-column">';
-                if (!empty($announce['image'])) {
+                $hasImage = !empty($announce['image']) && file_exists($announce['image']);
+                $cardClass = $hasImage ? 'news-card has-image d-flex flex-column' : 'news-card d-flex flex-column';
+                
+                echo '<div class="' . $cardClass . '">';
+                if ($hasImage) {
+                    echo '<div class="news-card-img-wrap">';
                     echo '<img src="' . htmlspecialchars($announce['image']) . '" alt="News Image">';
-                } else {
-                    echo '<div class="news-no-image-header d-flex align-items-center justify-content-center">';
-                    echo '<span class="material-symbols-outlined">campaign</span>';
                     echo '</div>';
                 }
                 echo '<div class="news-content d-flex flex-column flex-grow-1">';
+                echo '<div class="news-meta d-flex align-items-center gap-1">';
+                echo '<span class="material-symbols-outlined news-meta-icon">calendar_today</span>';
+                echo '<span class="news-date">' . formatThaiDate($announce['created_at'], true) . '</span>';
+                echo '</div>';
                 echo '<div class="news-title">';
                 echo '<a href="index.php?page=declare_detail&post=' . $announce_id . '" target="_blank">' . htmlspecialchars($announce['title']) . '</a>';
                 echo '</div>';
@@ -89,9 +98,13 @@ $current_page = $_GET['page'] ?? 'homepage';
                 echo htmlspecialchars(mb_strimwidth($announce['description'], 0, 100, '...'));
                 echo '</div>';
                 if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
-                    echo '<div class="d-flex justify-content-end gap-2 mt-3 pt-2 border-top">';
-                    echo '<button class="btn-edit-announce" onclick="window.location.href=\'index.php?page=feedbyadmin&edit=' . $announce_id . '\'">แก้ไข</button>';
-                    echo '<button class="btn-delete-announce" onclick="deletePost(' . $announce_id . ')">ลบ</button>';
+                    echo '<div class="news-admin-actions">';
+                    echo '<button class="btn-edit-announce" onclick="window.location.href=\'index.php?page=feedbyadmin&edit=' . $announce_id . '\'">';
+                    echo '<span class="material-symbols-outlined">edit</span> แก้ไข';
+                    echo '</button>';
+                    echo '<button class="btn-delete-announce" onclick="deletePost(' . $announce_id . ')">';
+                    echo '<span class="material-symbols-outlined">delete</span> ลบ';
+                    echo '</button>';
                     echo '</div>';
                 }
                 echo '</div>';

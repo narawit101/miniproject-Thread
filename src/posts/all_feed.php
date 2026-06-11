@@ -44,9 +44,6 @@ $posts = $stmt->fetchAll();
 
 <?php include_once 'layouts/top_layouts.php'; ?>
 <div class="bodyofcontent">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-
-    <link rel="stylesheet" href="styles/button.css"> <!-- ลิงก์ไปยังไฟล์ CSS ของคุณ -->
 
     <div class="item layoutofcon1">
         <?php include_once 'layouts/category_slide.php'; ?>
@@ -66,24 +63,28 @@ $posts = $stmt->fetchAll();
                         $user_img_path = 'icon/startprofile.png';
                     endif;
                     ?>
-                    <div class="user-profile" style="display: flex; align-items: center;margin-bottom: 30px;">
-                        <img src="<?= $user_img_path ?>" alt="User Image"
-                            style="width: 50px; height: 50px; object-fit: cover; border-radius: 100%; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); margin-right: 10px;">
-                        <p style="margin: 0;">
-                            <strong><?= htmlspecialchars($post['first_name']) ?>
-                                <?= htmlspecialchars($post['last_name']) ?></strong>
+                    <img src="<?= $user_img_path ?>" alt="User Image">
+                    <div>
+                        <p class="user-name">
+                            <strong><?= htmlspecialchars($post['first_name']) ?> <?= htmlspecialchars($post['last_name']) ?></strong>
                         </p>
+                        <span class="post-time"><?= formatThaiDate($post['created_at']) ?></span>
                     </div>
                 </div>
                 <hr>
-                <div class="post-content" style="margin-bottom: 30px;">
+                <div class="post-content">
                     <h2><?= htmlspecialchars($post['title']) ?></h2>
                     <p><?= htmlspecialchars($post['content']) ?></p>
                 </div>
 
                 <?php if (!empty($post['post_img'])): ?>
-                    <img src="uploads/<?= htmlspecialchars($post['post_img']) ?>" alt="Post Image"
-                        style="max-width: 80%; height: auto; margin-top: 5px; border-radius: 30px; display: block; margin-left: auto; margin-right: auto;">
+                    <?php
+                    $post_img_path = 'uploads/' . $post['post_img'];
+                    if (file_exists('uploads/posts/' . $post['post_img'])) {
+                        $post_img_path = 'uploads/posts/' . $post['post_img'];
+                    }
+                    ?>
+                    <img src="<?= htmlspecialchars($post_img_path) ?>" alt="Post Image" class="post-img">
                 <?php endif; ?>
 
 
@@ -118,7 +119,7 @@ $posts = $stmt->fetchAll();
                 </form>
 
                 <!-- แสดงจำนวนไลค์ -->
-                <p class="like-count" style="margin-top: 15px;margin-bottom: 10px">จำนวนไลค์: <?= $like_count ?></p>
+                <p class="like-count">จำนวนไลค์: <?= $like_count ?></p>
 
                 <!-- ดึงข้อมูลคอมเมนต์ล่าสุด 3 ตัว พร้อมชื่อผู้คอมเมนต์ -->
                 <?php
@@ -148,24 +149,23 @@ $posts = $stmt->fetchAll();
                     <ul class="comment-list" data-post-id="<?= $post_id ?>" style="display: none;">
                         <?php foreach ($comments as $comment): ?>
                             <li class="comment-item">
-                                <div class="comment-header" style="display: flex; align-items: center;">
-                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                <div class="comment-header">
+                                    <div class="comment-user-info">
                                         <?php
                                         // ดึงรูปผู้ใช้
                                         if (!empty($comment['user_img']) && file_exists('uploads/' . $comment['user_img'])):
                                             $comment_user_img_path = 'uploads/' . htmlspecialchars($comment['user_img']);
                                         else:
-                                            $comment_user_img_path = 'images/de_icon.png';
+                                            $comment_user_img_path = 'icon/startprofile.png';
                                         endif;
                                         ?>
-                                        <img src="<?= $comment_user_img_path ?>" alt="รูปผู้ใช้"
-                                            style="width: 30px; height: 30px; object-fit: cover; border-radius: 100%; margin-right: 0px;">
+                                        <img src="<?= $comment_user_img_path ?>" alt="รูปผู้ใช้" class="comment-avatar">
 
                                         <!-- ชื่อผู้แสดงความคิดเห็น และเวลาที่แสดงความคิดเห็น -->
                                         <div>
                                             <strong><?= htmlspecialchars($comment['first_name']) . ' ' . htmlspecialchars($comment['last_name']) ?></strong>
-                                            <span class="comment-date" style="font-size: 0.9em; color: #666;">&bull;
-                                                <?= date('d M Y, H:i', strtotime($comment['created_at'])) ?></span>
+                                            <span class="comment-date">&bull;
+                                                <?= formatThaiDate($comment['created_at']) ?></span>
                                         </div>
                                     </div>
                                 </div>
@@ -174,14 +174,12 @@ $posts = $stmt->fetchAll();
                                 <div class="comment-body">
                                     <?php if (!empty($comment['image'])): ?>
                                         <!-- รูปในคอมเมนต์ -->
-                                        <img src="uploads/<?= htmlspecialchars($comment['image']) ?>" alt="รูปคอมเมนต์"
-                                            style="max-width: 70%; height: auto; margin-top: 5px; border-radius: 10px;">
+                                        <img src="uploads/<?= htmlspecialchars($comment['image']) ?>" alt="รูปคอมเมนต์" class="comment-img">
                                     <?php endif; ?>
 
                                     <!-- เนื้อหาคอมเมนต์ -->
                                     <p class="comment-content"><?= htmlspecialchars($comment['content']) ?></p>
-
-
+                                </div>
                             </li>
                         <?php endforeach; ?>
                     </ul>
@@ -208,24 +206,6 @@ $posts = $stmt->fetchAll();
     <div class="item layoutofcon4">
         <?php include_once 'layouts/con4.php'; ?>
     </div>
-
-    <script>
-        // Toggle comments
-        document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('.toggle-comments-btn').forEach(function (button) {
-                button.addEventListener('click', function () {
-                    let postId = this.getAttribute('data-post-id');
-                    let commentList = document.querySelector(`.comment-list[data-post-id='${postId}']`);
-                    if (commentList.style.display === 'none' || commentList.style.display === '') {
-                        commentList.style.display = 'block';
-                        this.textContent = 'ซ่อนคอมเมนต์';
-                    } else {
-                        commentList.style.display = 'none';
-                        this.textContent = `ดูคอมเมนต์ (${commentList.childElementCount})`;
-                    }
-                });
-            });
-        });
-    </script>
+</div>
 
     <?php include_once 'layouts/bottom_layouts.php'; ?>

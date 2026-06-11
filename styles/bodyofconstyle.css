@@ -1,6 +1,8 @@
 /* Grid system for page body layouts */
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
@@ -10,6 +12,7 @@
     grid-template-rows: auto;
     column-gap: 15px;
     row-gap: 15px;
+    width: 100%;
     max-width: 1300px;
     margin: 30px auto;
     padding: 0 20px;
@@ -23,6 +26,8 @@
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
     color: #123524;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    min-width: 0;
+    /* Prevents CSS Grid track overflow on small screens */
 }
 
 .layoutofcon1 {
@@ -41,18 +46,6 @@
     padding: 25px;
 }
 
-/* If there is no left sidebar (layoutofcon2 is empty), expand con3 to span 6 columns */
-@media (min-width: 992px) {
-    /* Adjust grid layout column spanning for layout components */
-    .layoutofcon3 {
-        grid-column: 1 / span 6;
-    }
-    .layoutofcon4 {
-        grid-column: span 2;
-        grid-column-start: 7;
-    }
-}
-
 .layoutofcon4 {
     grid-column: 1 / span 8;
     padding: 20px;
@@ -64,6 +57,19 @@
     padding: 20px;
 }
 
+/* If there is no left sidebar (layoutofcon2 is empty), expand con3 to span 6 columns */
+@media (min-width: 992px) {
+
+    /* Adjust grid layout column spanning for layout components */
+    .layoutofcon3 {
+        grid-column: 1 / span 6;
+    }
+
+    .layoutofcon4 {
+        grid-column: 7 / span 2;
+    }
+}
+
 .wellcome-pic {
     width: 100%;
     border-radius: 12px;
@@ -72,6 +78,7 @@
 
 /* Inside container cards */
 .insidecon3 {
+    width: 100%;
     background: #ffffff;
     border: 1px solid rgba(18, 53, 36, 0.06);
     border-radius: 12px;
@@ -102,15 +109,17 @@ h1 {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 15px;
 }
 
 .user-profile img {
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid #3E7B27;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
 }
 
 .user-profile-name {
@@ -130,12 +139,182 @@ h1 {
     .bodyofcontent {
         grid-template-columns: 1fr;
     }
-    
+
     .layoutofcon1,
     .layoutofcon2,
     .layoutofcon3,
     .layoutofcon4,
     .layoutofcon5 {
         grid-column: 1 / span 1 !important;
+    }
+}
+
+/* ── Post Image (Standard - Responsive) ─────────── */
+.post-img {
+    max-width: 100%;
+    max-height: 450px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-radius: 16px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Comment Image (Standard - Responsive) ──────── */
+.comment-img {
+    max-width: 100%;
+    max-height: 250px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    display: block;
+}
+
+/* ── Image Preview Container ────────────────────── */
+.img-preview-container {
+    display: none;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.img-preview-container img {
+    max-width: 100%;
+    max-height: 250px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* ── Create/Edit Post Form Box ──────────────────── */
+.boxofpost {
+    max-width: 720px;
+}
+
+.insidecreatepost {
+    padding: 0;
+}
+
+/* ── User name inside post card ─────────────────── */
+.user-name {
+    font-weight: 600;
+    font-size: 15px;
+    color: #123524;
+    margin: 0;
+}
+
+/* ── Post content section ───────────────────────── */
+.post-content {
+    margin-bottom: 12px;
+}
+
+/* ── Post Image Previews & Current Images in Create/Edit ──────────────── */
+.post-create-preview {
+    max-width: 100%;
+    max-height: 250px;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+/* ── Mobile Responsive Style overrides ────────────────────────────────── */
+@media (max-width: 768px) {
+    .bodyofcontent {
+        margin: 15px auto;
+        padding: 0 10px;
+    }
+
+    .layoutofcon3,
+    .layoutofcon4,
+    .layoutofcon5 {
+        padding: 15px !important;
+    }
+
+    .insidecon3 {
+        padding: 15px !important;
+    }
+
+    .post-img {
+        max-width: 100%;
+        border-radius: 12px;
+    }
+
+    .comment-img {
+        max-width: 100%;
+        border-radius: 8px;
+    }
+
+    .comment-body {
+        margin-left: 42px;
+    }
+}
+
+/* ── Word wrapping rules for user content ─────────────────────────── */
+.post-content h2,
+.post-content p,
+.comment-content,
+.comment-content p {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+/* ── Custom Layouts and Double-Nesting Fixes ──────────────────────── */
+.item.layoutofcon3,
+.item.layoutofcon4 {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+}
+
+.layoutofcon3 > h1 {
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(18, 53, 36, 0.08);
+    border-radius: 16px;
+    padding: 16px 24px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    margin-top: 0;
+    margin-bottom: 20px;
+    border-bottom: none;
+    font-size: 24px;
+    font-weight: 700;
+    color: #123524;
+}
+
+.single-card-layout {
+    max-width: 860px;
+    margin: 40px auto;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(18, 53, 36, 0.08);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    border-radius: 16px;
+    padding: 35px;
+    color: #123524;
+}
+
+.single-card-layout.wide {
+    max-width: 1100px;
+}
+
+/* Mobile responsive adjustments for single-card-layout */
+@media (max-width: 768px) {
+    .single-card-layout {
+        margin: 20px 10px;
+        padding: 20px;
     }
 }

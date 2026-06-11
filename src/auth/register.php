@@ -67,7 +67,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="styles/loginstyle.css?v=<?= time() ?>">
-    <link rel="stylesheet" href="styles/registerstyle.css?v=<?= time() ?>">
 </head>
 
 <body class="d-flex align-items-center justify-content-center min-vh-100 py-4">
@@ -75,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="row justify-content-center">
         <div class="col-12 col-sm-10 col-md-8 col-lg-7 col-xl-5">
             <main class="card auth-card p-4 p-sm-5">
-                <h1 class="register text-center mb-4">สมัครสมาชิก</h1>
+                <h1 class="welcome text-center mb-4">สมัครสมาชิก</h1>
 
                 <form method="POST" action="index.php?page=register">
                     <div class="row g-3 mb-3">

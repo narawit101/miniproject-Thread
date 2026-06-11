@@ -9,14 +9,14 @@
 .comment-item {
     margin-bottom: 12px;
     padding: 15px;
-    border: 1px solid rgba(18, 53, 36, 0.1);
+    border: 1px solid rgba(18, 53, 36, 0.08);
     border-radius: 10px;
-    background-color: rgba(244, 255, 195, 0.15);
+    background-color: #f8f9fa;
     transition: background-color 0.3s;
 }
 
 .comment-item:hover {
-    background-color: rgba(244, 255, 195, 0.25);
+    background-color: #f1f3f5;
 }
 
 .comment-header {
@@ -69,10 +69,10 @@
     box-shadow: 0 0 8px rgba(18, 53, 36, 0.15);
 }
 
-.comment-form button {
+.comment-form button[type="submit"] {
     padding: 10px 20px;
     background-color: #123524;
-    color: #F4FFC3;
+    color: #ffffff;
     font-family: 'Kanit', sans-serif;
     font-weight: 600;
     font-size: 15px;
@@ -81,11 +81,65 @@
     cursor: pointer;
     transition: all 0.3s ease;
     margin-top: 10px;
+    margin-right: 8px;
 }
 
-.comment-form button:hover {
+.comment-form button[type="submit"]:hover {
     background-color: #3E7B27;
     border-color: #3E7B27;
     color: #ffffff;
     box-shadow: 0 4px 12px rgba(62, 123, 39, 0.2);
+}
+
+/* ── Comment action links (edit/delete) ──────────── */
+.comment-actions {
+    font-size: 0.9em;
+}
+
+.comment-actions a {
+    text-decoration: none;
+    font-weight: 600;
+    margin-right: 12px;
+    transition: color 0.2s;
+}
+
+.comment-actions a.edit {
+    color: #3E7B27;
+}
+
+.comment-actions a.edit:hover {
+    color: #123524;
+}
+
+.comment-actions a.delete {
+    color: #e53e3e;
+}
+
+.comment-actions a.delete:hover {
+    color: #9b2c2c;
+}
+
+.comment-user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.comment-avatar {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 0px;
+}
+
+.comment-body {
+    margin-left: 52px;
+    margin-top: 5px;
+}
+
+.comment-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
 }

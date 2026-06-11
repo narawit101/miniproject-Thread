@@ -19,17 +19,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Handle image upload
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+        if (!validateUploadedFileSize($_FILES['image'], 5)) {
+            set_swal('error', 'อัปโหลดไม่สำเร็จ!', 'ขนาดรูปภาพต้องไม่เกิน 5MB');
+            $redirect_url = $edit_id ? "index.php?page=feedbyadmin&edit=" . $edit_id : "index.php?page=feedbyadmin";
+            header("Location: " . $redirect_url);
+            exit();
+        }
         $target_dir = "uploads/";
         if (!is_dir($target_dir)) {
             mkdir($target_dir, 0755, true);
         }
-        $unique_name = $target_dir . uniqid() . '-' . basename($_FILES["image"]["name"]);
-        move_uploaded_file($_FILES["image"]["tmp_name"], $unique_name);
-        $image = $unique_name;
-
-        // Delete old image if updating
-        if ($post_to_edit && !empty($post_to_edit['image']) && file_exists($post_to_edit['image'])) {
-            unlink($post_to_edit['image']);
+        $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+        $unique_name = $target_dir . 'announce_' . uniqid() . '.' . $ext;
+        if (uploadAndCompressImage($_FILES['image'], $unique_name, 1200, 75)) {
+            $image = $unique_name;
+            // Delete old image if updating
+            if ($post_to_edit && !empty($post_to_edit['image']) && file_exists($post_to_edit['image'])) {
+                unlink($post_to_edit['image']);
+            }
+        } else {
+            $image = $post_to_edit ? $post_to_edit['image'] : '';
         }
     } else {
         $image = $post_to_edit ? $post_to_edit['image'] : '';
@@ -52,62 +61,49 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 ?>
 
 <?php include_once 'layouts/top_layouts.php'; ?>
-<link rel="stylesheet" href="styles/feedbyadmin.css">
 
-<div class="bodyofcontent">
+<div class="single-card-layout">
+    <h1>เขียนประกาศ</h1>
+    <div class="boxofpost" style="max-width: 600px; margin: 25px auto 0 auto;">
+        <h2><?= isset($post_to_edit) ? 'แก้ไขประกาศ' : 'โพสต์ประกาศใหม่' ?></h2>
 
-    <div class="item layoutofcon1">
-        <?php include_once 'layouts/category_slide.php'; ?>
+        <form method="POST" action="" enctype="multipart/form-data" class="mt-3">
+            <input type="hidden" name="edit_index"
+                value="<?= isset($edit_id) ? htmlspecialchars($edit_id) : '' ?>">
+
+            <div class="mb-3">
+                <label for="title" class="form-label font-weight-bold">หัวข้อ:</label>
+                <input type="text" id="title" name="title" class="form-control"
+                    value="<?= isset($post_to_edit) ? htmlspecialchars($post_to_edit['title']) : '' ?>"
+                    required>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label font-weight-bold">รายละเอียด:</label>
+                <textarea id="description" name="description" class="form-control" rows="5"
+                    required><?= isset($post_to_edit) ? htmlspecialchars($post_to_edit['description']) : '' ?></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="image" class="form-label font-weight-bold">อัปโหลดรูปภาพ:</label>
+                <input type="file" id="image" name="image" class="form-control" accept="image/*"
+                    onchange="previewImage()">
+                <div class="mt-2">
+                    <img id="imagePreview"
+                        src="<?= isset($post_to_edit) && $post_to_edit['image'] ? htmlspecialchars($post_to_edit['image']) : '' ?>"
+                        alt="Image Preview" class="img-thumbnail admin-img-preview"
+                        <?= isset($post_to_edit) && !empty($post_to_edit['image']) ? '' : 'style="display:none;"' ?>>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-primary w-100"><?= isset($post_to_edit) ? 'บันทึกการแก้ไข' : 'โพสต์' ?></button>
+                <button type="button" id="cancelButton" class="btn btn-outline-danger w-100" onclick="cancelImage()"
+                    <?= isset($post_to_edit) && !empty($post_to_edit['image']) ? '' : 'style="display:none;"' ?>>ยกเลิกรูปภาพ</button>
+                <button type="button" class="btn btn-outline-primary w-100" onclick="history.back()">ย้อนกลับ</button>
+            </div>
+        </form>
     </div>
-
-    <div class="item layoutofcon3">
-        <h1>เขียนประกาศ</h1>
-        <div class="insidecon3">
-            <h2><?= isset($post_to_edit) ? 'แก้ไขประกาศ' : 'โพสต์ประกาศใหม่' ?></h2>
-
-            <form method="POST" action="" enctype="multipart/form-data" class="mt-3">
-                <input type="hidden" name="edit_index"
-                    value="<?= isset($edit_id) ? htmlspecialchars($edit_id) : '' ?>">
-
-                <div class="mb-3">
-                    <label for="title" class="form-label">หัวข้อ:</label>
-                    <input type="text" id="title" name="title" class="form-control"
-                        value="<?= isset($post_to_edit) ? htmlspecialchars($post_to_edit['title']) : '' ?>"
-                        required>
-                </div>
-
-                <div class="mb-3">
-                    <label for="description" class="form-label">รายละเอียด:</label>
-                    <textarea id="description" name="description" class="form-control" rows="4"
-                        required><?= isset($post_to_edit) ? htmlspecialchars($post_to_edit['description']) : '' ?></textarea>
-                </div>
-
-                <div class="mb-3">
-                    <label for="image" class="form-label">อัปโหลดรูปภาพ:</label>
-                    <input type="file" id="image" name="image" class="form-control" accept="image/*"
-                        onchange="previewImage()">
-                    <div class="mt-2">
-                        <img id="imagePreview"
-                            src="<?= isset($post_to_edit) && $post_to_edit['image'] ? htmlspecialchars($post_to_edit['image']) : '' ?>"
-                            alt="Image Preview" class="img-thumbnail"
-                            style="max-height: 200px; <?= isset($post_to_edit) && !empty($post_to_edit['image']) ? '' : 'display:none;' ?>">
-                    </div>
-                </div>
-
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary"><?= isset($post_to_edit) ? 'บันทึกการแก้ไข' : 'โพสต์' ?></button>
-                    <button type="button" id="cancelButton" class="btn btn-secondary" onclick="cancelImage()"
-                        style="<?= isset($post_to_edit) && !empty($post_to_edit['image']) ? '' : 'display:none;' ?>">ยกเลิกรูปภาพ</button>
-                    <button type="button" class="btn btn-outline-primary" onclick="history.back()">ย้อนกลับ</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="item layoutofcon4">
-        <?php include_once 'layouts/con4.php'; ?>
-    </div>
-
 </div>
 
 <?php include_once 'layouts/bottom_layouts.php'; ?>

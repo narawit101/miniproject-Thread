@@ -39,43 +39,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 include_once 'layouts/top_layouts.php';
 ?>
 
-<div class="bodyofcontent">
+<div class="single-card-layout">
+    <h1>เปลี่ยนรหัสผ่าน</h1>
+    <div class="boxofpost" style="max-width: 480px; margin: 25px auto 0 auto;">
+        <form action="index.php?page=edit_password" method="POST" class="mt-3">
 
-    <div class="item layoutofcon1">
-        <?php include_once 'layouts/category_slide.php'; ?>
+            <div class="mb-3">
+                <label for="new_password" class="form-label fw-semibold">รหัสผ่านใหม่:</label>
+                <input type="password" id="new_password" name="new_password"
+                       class="form-control" required placeholder="อย่างน้อย 6 ตัวอักษร">
+            </div>
+
+            <div class="mb-3">
+                <label for="confirm_password" class="form-label fw-semibold">ยืนยันรหัสผ่านใหม่:</label>
+                <input type="password" id="confirm_password" name="confirm_password"
+                       class="form-control" required placeholder="พิมพ์รหัสผ่านอีกครั้ง">
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-primary w-100">บันทึก</button>
+                <button type="button" class="btn btn-outline-secondary w-100"
+                        onclick="window.history.back();">ย้อนกลับ</button>
+            </div>
+        </form>
     </div>
-
-    <div class="item layoutofcon3">
-        <h1>เปลี่ยนรหัสผ่าน</h1>
-        <div class="insidecon3">
-            <form action="index.php?page=edit_password" method="POST" class="mt-3"
-                  style="max-width: 420px;">
-
-                <div class="mb-3">
-                    <label for="new_password" class="form-label fw-semibold">รหัสผ่านใหม่:</label>
-                    <input type="password" id="new_password" name="new_password"
-                           class="form-control" required placeholder="อย่างน้อย 6 ตัวอักษร">
-                </div>
-
-                <div class="mb-3">
-                    <label for="confirm_password" class="form-label fw-semibold">ยืนยันรหัสผ่านใหม่:</label>
-                    <input type="password" id="confirm_password" name="confirm_password"
-                           class="form-control" required placeholder="พิมพ์รหัสผ่านอีกครั้ง">
-                </div>
-
-                <div class="d-flex gap-2 mt-4">
-                    <button type="submit" class="btn btn-primary">บันทึก</button>
-                    <button type="button" class="btn btn-outline-secondary"
-                            onclick="window.history.back();">ย้อนกลับ</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="item layoutofcon4">
-        <?php include_once 'layouts/con4.php'; ?>
-    </div>
-
 </div>
 
 <?php include_once 'layouts/bottom_layouts.php'; ?>

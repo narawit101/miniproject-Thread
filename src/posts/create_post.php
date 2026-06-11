@@ -21,10 +21,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // จัดการการอัปโหลดรูปภาพ
     $post_img_name = null;
     if (!empty($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+        if (!validateUploadedFileSize($_FILES['image'], 5)) {
+            set_swal('error', 'อัปโหลดไม่สำเร็จ!', 'ขนาดรูปภาพต้องไม่เกิน 5MB');
+            header('Location: index.php?page=create_post');
+            exit();
+        }
         $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
         $post_img_name = 'post_' . uniqid() . '.' . $ext;
         $target = 'uploads/posts/' . $post_img_name;
-        if (!move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
+        if (!uploadAndCompressImage($_FILES['image'], $target, 1200, 75)) {
             $post_img_name = null; // อัปโหลดล้มเหลว
         }
     }
@@ -53,58 +58,47 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <?php include_once 'layouts/top_layouts.php'; ?>
 
-<div class="bodyofcontent">
+<div class="single-card-layout">
+    <h1>เขียนกระทู้ของฉัน</h1>
+    <div class="boxofpost">
+        <!-- HTML Form -->
+        <form id="postForm" method="POST" enctype="multipart/form-data" class="mt-3">
+            <div class="mb-3">
+                <label for="title" class="form-label font-weight-bold">หัวข้อกระทู้:</label>
+                <input type="text" id="title" name="title" class="form-control" placeholder="หัวข้อกระทู้" required>
+            </div>
 
-    <div class="item layoutofcon1">
-        <?php include_once 'layouts/category_slide.php'; ?>
-    </div>
+            <div class="mb-3">
+                <label for="content" class="form-label">เนื้อหากระทู้:</label>
+                <textarea id="content" name="content" class="form-control" rows="5" placeholder="เนื้อหากระทู้" required></textarea>
+            </div>
 
-    <div class="item layoutofcon3">
-
-        <h1>เขียนกระทู้ของฉัน</h1>
-        <div class="boxofpost">
-            <!-- HTML Form -->
-            <form id="postForm" method="POST" enctype="multipart/form-data" class="mt-3">
-                <div class="mb-3">
-                    <label for="title" class="form-label font-weight-bold">หัวข้อกระทู้:</label>
-                    <input type="text" id="title" name="title" class="form-control" placeholder="หัวข้อกระทู้" required>
+            <div class="mb-3">
+                <label for="image" class="form-label">อัปโหลดรูปภาพ (ถ้ามี):</label>
+                <input type="file" id="image" name="image" class="form-control" accept="image/*" onchange="previewImage(event)">
+                <div class="mt-2">
+                    <img id="preview" src="#" alt="ตัวอย่างรูปภาพ" class="img-thumbnail post-create-preview" style="display: none;">
                 </div>
+            </div>
 
-                <div class="mb-3">
-                    <label for="content" class="form-label">เนื้อหากระทู้:</label>
-                    <textarea id="content" name="content" class="form-control" rows="5" placeholder="เนื้อหากระทู้" required></textarea>
-                </div>
+            <div class="mb-3">
+                <label for="category_id" class="form-label">เลือกหมวดหมู่:</label>
+                <select id="category_id" name="category_id" class="form-select" required>
+                    <option value="">เลือกหมวดหมู่</option>
+                    <?php foreach ($categories as $category): ?>
+                        <option value="<?= $category['category_id'] ?>">
+                            <?= htmlspecialchars($category['category_name']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
 
-                <div class="mb-3">
-                    <label for="image" class="form-label">อัปโหลดรูปภาพ (ถ้ามี):</label>
-                    <input type="file" id="image" name="image" class="form-control" accept="image/*" onchange="previewImage(event)">
-                    <div class="mt-2">
-                        <img id="preview" src="#" alt="ตัวอย่างรูปภาพ" class="img-thumbnail" style="display: none; max-width: 100%; height: auto;">
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="category_id" class="form-label">เลือกหมวดหมู่:</label>
-                    <select id="category_id" name="category_id" class="form-select" required>
-                        <option value="">เลือกหมวดหมู่</option>
-                        <?php foreach ($categories as $category): ?>
-                            <option value="<?= $category['category_id'] ?>">
-                                <?= htmlspecialchars($category['category_name']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <div class="d-flex gap-2 mt-4">
-                    <button type="submit" class="btn btn-primary">โพสต์กระทู้</button>
-                    <button type="button" class="btn btn-secondary" onclick="deleteImage()">ลบรูปภาพ</button>
-                    <button type="button" class="btn btn-outline-primary" onclick="window.location.href='index.php?page=homepage'">ย้อนกลับ</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    <div class="item layoutofcon4">
-    <?php include_once 'layouts/con4.php'; ?>
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-primary">โพสต์กระทู้</button>
+                <button type="button" class="btn btn-outline-danger" onclick="deleteImage()">ลบรูปภาพ</button>
+                <button type="button" class="btn btn-outline-primary" onclick="window.location.href='index.php?page=homepage'">ย้อนกลับ</button>
+            </div>
+        </form>
     </div>
 </div>
 

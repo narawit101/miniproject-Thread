@@ -51,8 +51,6 @@ $popular_posts = $stmt_popular->fetchAll();
 <?php include_once 'layouts/top_layouts.php'; ?>
 <div class="bodyofcontent">
 
-    <link rel="stylesheet" href="styles/button.css"> <!-- ลิงก์ไปยังไฟล์ CSS ของคุณ -->
-
     <div class="item layoutofcon1">
         <?php include_once 'layouts/category_slide.php'; ?>
     </div>
@@ -73,14 +71,12 @@ $popular_posts = $stmt_popular->fetchAll();
                         $user_img_path = 'icon/startprofile.png';
                     endif;
                     ?>
-
-                    <!-- แสดงโปรไฟล์ -->
-                    <div class="user-profile">
-                        <img src="<?= $user_img_path ?>" alt="User Image" class="user-image">
+                    <img src="<?= $user_img_path ?>" alt="User Image" class="user-image">
+                    <div>
                         <p class="user-name">
-                            <strong><?= htmlspecialchars($post['first_name']) ?>
-                                <?= htmlspecialchars($post['last_name']) ?></strong>
+                            <strong><?= htmlspecialchars($post['first_name']) ?> <?= htmlspecialchars($post['last_name']) ?></strong>
                         </p>
+                        <span class="post-time"><?= formatThaiDate($post['created_at']) ?></span>
                     </div>
                 </div>
                 <hr>
@@ -92,7 +88,13 @@ $popular_posts = $stmt_popular->fetchAll();
 
                 <!-- สิ้นสุดรูปกับโพส -->
                 <?php if (!empty($post['post_img'])): ?>
-                    <img src="uploads/<?= htmlspecialchars($post['post_img']) ?>" alt="Post Image" class="post-img">
+                    <?php
+                    $post_img_path = 'uploads/' . $post['post_img'];
+                    if (file_exists('uploads/posts/' . $post['post_img'])) {
+                        $post_img_path = 'uploads/posts/' . $post['post_img'];
+                    }
+                    ?>
+                    <img src="<?= htmlspecialchars($post_img_path) ?>" alt="Post Image" class="post-img">
                 <?php endif; ?>
                 <?php
                 $post_id = $post['post_id'];
@@ -124,7 +126,7 @@ $popular_posts = $stmt_popular->fetchAll();
                 </form>
 
                 <!-- แสดงจำนวนไลค์ -->
-                <p class="like-count" style="margin-top: 15px;margin-bottom: 10px">จำนวนไลค์: <?= $like_count ?></p>
+                <p class="like-count">จำนวนไลค์: <?= $like_count ?></p>
 
                 <?php
                 // นับจำนวนคอมเมนต์ทั้งหมดสำหรับโพสต์นี้
@@ -154,35 +156,33 @@ $popular_posts = $stmt_popular->fetchAll();
                     <ul class="comment-list" data-post-id="<?= $post_id ?>" style="display: none;">
                         <?php foreach ($comments as $comment): ?>
                             <li class="comment-item">
-                                <div class="comment-header" style="display: flex; align-items: center;">
-                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div class="comment-header">
+                                        <div class="comment-user-info">
                                         <?php
                                         // ดึงรูปผู้ใช้
                                         if (!empty($comment['user_img']) && file_exists('uploads/' . $comment['user_img'])):
                                             $comment_user_img_path = 'uploads/' . htmlspecialchars($comment['user_img']);
                                         else:
-                                            $comment_user_img_path = 'images/de_icon.png';
+                                            $comment_user_img_path = 'icon/startprofile.png';
                                         endif;
                                         ?>
-                                        <img src="<?= $comment_user_img_path ?>" alt="รูปผู้ใช้"
-                                            style="width: 30px; height: 30px; object-fit: cover; border-radius: 100%; margin-right: 0px;">
+                                        <img src="<?= $comment_user_img_path ?>" alt="รูปผู้ใช้" class="comment-avatar">
 
                                         <!-- ชื่อผู้แสดงความคิดเห็น และเวลาที่แสดงความคิดเห็น -->
                                         <div>
                                             <strong><?= htmlspecialchars($comment['first_name']) . ' ' . htmlspecialchars($comment['last_name']) ?></strong>
-                                            <span class="comment-date" style="font-size: 0.9em; color: #666;">&bull;
-                                                <?= date('d M Y, H:i', strtotime($comment['created_at'])) ?></span>
+                                            <span class="comment-date">&bull;
+                                                <?= formatThaiDate($comment['created_at']) ?></span>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- เนื้อหาคอมเมนต์ -->
                                 <div class="comment-body">
-                                    <?php if (!empty($comment['image'])): ?>
-                                        <!-- รูปในคอมเมนต์ -->
-                                        <img src="uploads/<?= htmlspecialchars($comment['image']) ?>" alt="รูปคอมเมนต์"
-                                            style="max-width: 40%; height: auto; margin-top: 5px; border-radius: 10px;">
-                                    <?php endif; ?>
+                                        <?php if (!empty($comment['image'])): ?>
+                                            <!-- รูปในคอมเมนต์ -->
+                                            <img src="uploads/<?= htmlspecialchars($comment['image']) ?>" alt="รูปคอมเมนต์" class="comment-img">
+                                        <?php endif; ?>
 
                                     <!-- เนื้อหาคอมเมนต์ -->
                                     <p class="comment-content"><?= htmlspecialchars($comment['content']) ?></p>
@@ -191,7 +191,7 @@ $popular_posts = $stmt_popular->fetchAll();
                         <?php endforeach; ?>
                     </ul>
                 <?php else: ?>
-                    <p style="margin-top: 10px; margin-bottom: 10px;">ยังไม่มีคอมเมนต์</p>
+                    <p class="text-muted">ยังไม่มีคอมเมนต์</p>
                     <?php endif; ?>
                 <!-- ปุ่ม -->
                 <?php if ($post['user_id'] == $_SESSION['user_id'] || $_SESSION['role'] == 'admin'): ?>
@@ -212,24 +212,5 @@ $popular_posts = $stmt_popular->fetchAll();
         <?php include_once 'layouts/con4.php'; ?>
     </div>
 </div>
-
-<script>
-    // Toggle comments
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.toggle-comments-btn').forEach(function (button) {
-            button.addEventListener('click', function () {
-                let postId = this.getAttribute('data-post-id');
-                let commentList = document.querySelector(`.comment-list[data-post-id='${postId}']`);
-                if (commentList.style.display === 'none' || commentList.style.display === '') {
-                    commentList.style.display = 'block';
-                    this.textContent = 'ซ่อนคอมเมนต์';
-                } else {
-                    commentList.style.display = 'none';
-                    this.textContent = `ดูคอมเมนต์ (${commentList.childElementCount})`;
-                }
-            });
-        });
-    });
-</script>
 
 <?php include_once 'layouts/bottom_layouts.php'; ?>

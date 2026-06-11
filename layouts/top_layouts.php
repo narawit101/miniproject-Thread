@@ -2,18 +2,26 @@
 <html lang="en">
 
 <head>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPI</title>
+    <title>DPI Forum</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles/layoutsstyle.css?v=<?= time() ?>">
-    <link rel="stylesheet" href="styles/bodyofconstyle.css">
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- App Styles -->
+    <link rel="stylesheet" href="styles/layoutsstyle.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="styles/bodyofconstyle.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="styles/button.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="styles/commentstyle.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="styles/category_slidestyle.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="styles/manage_userstyle.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="styles/feedbyadmin.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="styles/add_categorystyle.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="styles/editprofilestyle.css?v=<?= time() ?>">
 </head>
 
 <body>

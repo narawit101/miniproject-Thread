@@ -1,12 +1,16 @@
 /* styles/category_slidestyle.css */
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
 .layoutofcon2.swiper {
     padding: 25px !important;
     position: relative;
+    width: 100%;
+    max-width: 100%;
 }
 
 .layoutofcon2.swiper h3 {
@@ -29,7 +33,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: rgba(244, 255, 195, 0.4);
+    background-color: rgba(133, 169, 71, 0.08);
     border: 1px solid rgba(18, 53, 36, 0.08);
     border-radius: 12px;
     padding: 15px;
@@ -41,7 +45,7 @@
 
 .category-item.swiper-slide:hover {
     transform: translateY(-4px);
-    background-color: rgba(244, 255, 195, 0.75);
+    background-color: rgba(133, 169, 71, 0.18);
     box-shadow: 0 6px 15px rgba(18, 53, 36, 0.1);
 }
 
@@ -61,7 +65,7 @@
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background: rgba(244, 255, 195, 0.6);
+    background: rgba(133, 169, 71, 0.12);
     border: 1.5px dashed #85A947;
     display: flex;
     align-items: center;
@@ -73,7 +77,7 @@
 .cate-button {
     width: 100%;
     background-color: #123524;
-    color: #F4FFC3;
+    color: #ffffff;
     font-family: 'Kanit', sans-serif;
     font-weight: 600;
     font-size: 13px;

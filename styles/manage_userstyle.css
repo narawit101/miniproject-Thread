@@ -4,8 +4,6 @@ h2 {
     font-size: 1.4rem;
     color: #123524;
     margin: 25px 0 12px 0;
-    border-left: 4px solid #3E7B27;
-    padding-left: 10px;
 }
 
 .user-table {
@@ -43,43 +41,4 @@ h2 {
 
 .user-table tbody tr:hover td {
     background-color: rgba(244, 255, 195, 0.2);
-}
-
-/* User actions buttons style */
-.btn {
-    display: inline-block;
-    padding: 6px 12px;
-    font-size: 13px;
-    font-weight: 600;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 1.5px solid transparent;
-}
-
-.btn-primary {
-    background-color: #123524;
-    color: #F4FFC3;
-    border-color: #123524;
-}
-
-.btn-primary:hover {
-    background-color: #3E7B27;
-    border-color: #3E7B27;
-    color: #ffffff;
-    box-shadow: 0 4px 10px rgba(62, 123, 39, 0.2);
-}
-
-.btn-danger {
-    background-color: transparent;
-    border-color: #e53e3e;
-    color: #e53e3e;
-}
-
-.btn-danger:hover {
-    background-color: #e53e3e;
-    color: #ffffff;
-    box-shadow: 0 4px 10px rgba(229, 62, 62, 0.2);
 }

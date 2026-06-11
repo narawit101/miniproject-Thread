@@ -4,6 +4,11 @@
     box-sizing: border-box;
 }
 
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+}
+
 body {
     background: linear-gradient(45deg, #85A947, #123524);
     background-attachment: fixed;
@@ -35,7 +40,7 @@ body {
 
 .nav-link-custom {
     text-decoration: none;
-    color: #F4FFC3;
+    color: rgba(255, 255, 255, 0.85);
     font-size: 16px;
     font-weight: 500;
     letter-spacing: 0.5px;
@@ -124,21 +129,21 @@ body {
     align-items: center;
     padding: 6px 12px;
     border-radius: 20px;
-    background: rgba(244, 255, 195, 0.15);
-    border: 1px solid rgba(244, 255, 195, 0.3);
+    background: rgba(133, 169, 71, 0.15);
+    border: 1px solid rgba(133, 169, 71, 0.3);
     margin-left: 20px;
     width: 250px;
     transition: all 0.3s ease;
 }
 
 .search:focus-within {
-    background: rgba(244, 255, 195, 0.25);
-    border-color: #F4FFC3;
-    box-shadow: 0 0 8px rgba(244, 255, 195, 0.4);
+    background: rgba(133, 169, 71, 0.25);
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 8px rgba(133, 169, 71, 0.4);
 }
 
 .search-icon {
-    color: #F4FFC3;
+    color: rgba(255, 255, 255, 0.7);
     font-size: 20px;
     user-select: none;
 }
@@ -155,7 +160,7 @@ body {
 }
 
 .search-input::placeholder {
-    color: rgba(244, 255, 195, 0.6);
+    color: rgba(255, 255, 255, 0.65);
 }
 
 /* User Info Badge */
@@ -177,7 +182,7 @@ body {
 
 .profile-pic:hover {
     transform: scale(1.08);
-    border-color: #F4FFC3;
+    border-color: #ffffff;
 }
 
 /* Submenu Dropdown Card */
@@ -199,10 +204,11 @@ body {
 }
 
 .sub-menu {
-    background: #F4FFC3;
+    background: #ffffff;
     padding: 20px;
-    border: 1px solid rgba(18, 53, 36, 0.1);
+    border: 1px solid rgba(18, 53, 36, 0.12);
     border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
 .sub-menu .user-info {
@@ -283,29 +289,106 @@ body {
     box-shadow: 0 0 0 0.25rem rgba(133, 169, 71, 0.25) !important;
 }
 
+/* --- Bootstrap 5 Theme Overrides (Forest Green & Pill Buttons) --- */
+.btn {
+    font-family: 'Kanit', sans-serif !important;
+    font-weight: 600 !important;
+    border-radius: 20px !important;
+    padding: 6px 16px !important;
+    font-size: 14px !important;
+    transition: all 0.3s ease !important;
+    border-width: 1.5px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 38px !important; /* Standardize height for buttons */
+}
+
+/* Sm buttons for tables and action rows */
+.btn-sm {
+    padding: 4px 12px !important;
+    font-size: 13px !important;
+    border-radius: 16px !important;
+    height: 30px !important;
+}
+
 .btn-primary {
     background-color: #123524 !important;
     border-color: #123524 !important;
-    color: #F4FFC3 !important;
-    font-weight: 500 !important;
-    border-radius: 20px !important;
+    color: #ffffff !important;
 }
 
 .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
     background-color: #3E7B27 !important;
     border-color: #3E7B27 !important;
     color: #ffffff !important;
+    box-shadow: 0 4px 10px rgba(62, 123, 39, 0.2) !important;
 }
 
 .btn-outline-primary {
+    background-color: transparent !important;
     color: #123524 !important;
     border-color: #123524 !important;
-    border-radius: 20px !important;
 }
 
-.btn-outline-primary:hover {
+.btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active {
     background-color: #123524 !important;
-    color: #F4FFC3 !important;
+    border-color: #123524 !important;
+    color: #ffffff !important;
+}
+
+/* Danger actions (Red Alert Style) */
+.btn-danger {
+    background-color: #e53e3e !important;
+    border-color: #e53e3e !important;
+    color: #ffffff !important;
+}
+
+.btn-danger:hover, .btn-danger:focus, .btn-danger:active {
+    background-color: #c53030 !important;
+    border-color: #c53030 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 10px rgba(229, 62, 62, 0.2) !important;
+}
+
+.btn-outline-danger {
+    background-color: transparent !important;
+    border-color: #e53e3e !important;
+    color: #e53e3e !important;
+}
+
+.btn-outline-danger:hover, .btn-outline-danger:focus, .btn-outline-danger:active {
+    background-color: #e53e3e !important;
+    border-color: #e53e3e !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 10px rgba(229, 62, 62, 0.2) !important;
+}
+
+/* Secondary actions (Slate Gray Style) */
+.btn-secondary {
+    background-color: #718096 !important;
+    border-color: #718096 !important;
+    color: #ffffff !important;
+}
+
+.btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active {
+    background-color: #4a5568 !important;
+    border-color: #4a5568 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 10px rgba(113, 128, 150, 0.2) !important;
+}
+
+.btn-outline-secondary {
+    background-color: transparent !important;
+    border-color: #718096 !important;
+    color: #718096 !important;
+}
+
+.btn-outline-secondary:hover, .btn-outline-secondary:focus, .btn-outline-secondary:active {
+    background-color: #718096 !important;
+    border-color: #718096 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 10px rgba(113, 128, 150, 0.2) !important;
 }
 
 .form-floating > label {
@@ -318,5 +401,17 @@ a {
 }
 a:hover {
     color: #123524;
+}
+
+/* Global Code tags override to match Forest Green theme (removes Bootstrap default pink) */
+code {
+    font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.88em;
+    color: #123524 !important;
+    background-color: rgba(133, 169, 71, 0.12) !important;
+    padding: 2px 6px !important;
+    border-radius: 6px !important;
+    border: 1px solid rgba(133, 169, 71, 0.2) !important;
+    word-break: break-all;
 }
 

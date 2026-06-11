@@ -19,78 +19,21 @@ if (isset($_GET['post'])) {
 }
 ?>
 <?php include_once 'layouts/top_layouts.php'; ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($post['title']); ?></title>
-    <style>
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
 
-        h2 {
-            text-align: center;
-            color: #4b0082;
-            margin-bottom: 20px;
-        }
-
-        .post-description {
-            /* white-space: pre-wrap; */
-            font-size: 16px;
-            color: #333;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-
-        .container img {
-            width: 100%;
-            height: auto;
-            display: block;
-            margin-bottom: 20px;
-            border-radius: 8px;
-        }
-
-        button {
-            background-color: #4b0082;
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #360061;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h2><?php echo htmlspecialchars($post['title']); ?></h2>
+<div class="bodyofcontent">
+    <div class="item layoutofcon5 announce-detail-card">
+        <h1 class="text-center mb-4"><?php echo htmlspecialchars($post['title']); ?></h1>
         <?php if (!empty($post['image'])): ?>
             <img src="<?php echo htmlspecialchars($post['image']); ?>" alt="News Image">
         <?php endif; ?>
-        <div class="post-description">
-            <?php echo nl2br(htmlspecialchars($post['description'])); ?>
+        <div class="insidecon3 mb-4">
+            <div class="announce-detail-desc">
+                <?php echo nl2br(htmlspecialchars($post['description'])); ?>
+            </div>
         </div>
-        <p><small>Posted on: <?php echo date('F j, Y, g:i a', strtotime($post['created_at'])); ?></small></p>
-        <button onclick="window.location.href = 'index.php?page=homepage'">ย้อนกลับ</button>
+        <p class="text-muted mb-4"><small>Posted on: <?php echo date('F j, Y, g:i a', strtotime($post['created_at'])); ?></small></p>
+        <button type="button" class="btn btn-primary w-100" onclick="window.location.href = 'index.php?page=homepage'">ย้อนกลับ</button>
     </div>
-</body>
-</html>
+</div>
+
 <?php include_once 'layouts/bottom_layouts.php'; ?>

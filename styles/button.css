@@ -11,7 +11,7 @@
     cursor: pointer;
     border: 1.5px solid #123524;
     background-color: #123524;
-    color: #F4FFC3;
+    color: #ffffff;
     transition: all 0.3s ease;
     margin-right: 5px;
     margin-bottom: 5px;
@@ -59,7 +59,7 @@ button.form-btn {
     font-weight: 600;
     border: 2px solid #123524;
     background-color: #123524;
-    color: #F4FFC3;
+    color: #ffffff;
     cursor: pointer;
     transition: all 0.3s ease;
     width: 100%;
@@ -83,14 +83,46 @@ button.form-btn.secondary:hover {
     color: #ffffff;
 }
 
+/* Toggle Comments Button Style */
+.toggle-comments-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 20px;
+    cursor: pointer;
+    border: 1.5px solid #3E7B27;
+    background-color: transparent;
+    color: #3E7B27;
+    transition: all 0.3s ease;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    font-family: 'Kanit', sans-serif;
+    outline: none;
+}
+
+.toggle-comments-btn:hover {
+    background-color: #3E7B27;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(62, 123, 39, 0.2);
+}
+
 /* ── Like / Unlike button ─────────────────────── */
+.like-form {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0;
+}
+
 .btn-like {
     display: inline-flex;
-    width: 100px;
     align-items: center;
-    gap: 4px;
-    padding: 4px 12px;
-    font-size: 13px;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 18px;
+    font-size: 14px;
     font-weight: 600;
     font-family: 'Kanit', sans-serif;
     border-radius: 20px;
@@ -99,9 +131,10 @@ button.form-btn.secondary:hover {
     color: #3E7B27;
     cursor: pointer;
     transition: all 0.25s ease;
-    margin-right: 4px;
-    margin-bottom: 4px;
-    /* width: auto; */
+    margin-right: 5px;
+    margin-bottom: 5px;
+    min-width: 110px;
+    vertical-align: middle;
 }
 
 .btn-like:hover {
@@ -113,7 +146,7 @@ button.form-btn.secondary:hover {
 .btn-like.liked {
     background-color: #123524;
     border-color: #123524;
-    color: #F4FFC3;
+    color: #ffffff;
 }
 
 .btn-like.liked:hover {

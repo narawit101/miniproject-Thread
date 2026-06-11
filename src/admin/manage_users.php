@@ -20,82 +20,68 @@ $users = $stmt->fetchAll();
 
 <?php include_once 'layouts/top_layouts.php';?>
 
-<link rel="stylesheet" href="styles/manage_userstyle.css">
-<div class="bodyofcontent">
-
-    <div class="item layoutofcon1">
-        <?php include_once 'layouts/category_slide.php'; ?>
-    </div>
-
-    <div class="item layoutofcon3">
-        <h1>จัดการผู้ใช้</h1>
-        <div class="insidecon3">
-            <h2>ผู้ใช้ Admin</h2>
-            <table class="user-table">
-                <thead>
+<div class="single-card-layout wide">
+    <h1>จัดการผู้ใช้</h1>
+    
+    <h2>ผู้ใช้ Admin</h2>
+    <table class="user-table">
+        <thead>
+            <tr>
+                <th>ชื่อ</th>
+                <th>อีเมล</th>
+                <th>Role</th>
+                <th>การกระทำ</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($users as $user): ?>
+                <?php if ($user['role'] == 'admin'): ?>
                     <tr>
-                        <th>ชื่อ</th>
-                        <th>อีเมล</th>
-                        <th>Role</th>
-                        <th>การกระทำ</th>
+                        <td><?= htmlspecialchars($user['first_name']) . ' ' . htmlspecialchars($user['last_name']) ?>
+                        </td>
+                        <td><?= htmlspecialchars($user['email']) ?></td>
+                        <td><?= htmlspecialchars($user['role']) ?></td>
+                        <td>
+                            <a href="index.php?page=edit_user&user_id=<?= $user['user_id'] ?>" class="btn btn-outline-primary btn-sm">แก้ไข</a>
+                            <a href="index.php?page=delete_user&user_id=<?= $user['user_id'] ?>"
+                                data-confirm="ยืนยันการลบผู้ใช้ '<?= htmlspecialchars($user['first_name']) ?>'?"
+                                class="btn btn-outline-danger btn-sm">ลบ</a>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($users as $user): ?>
-                        <?php if ($user['role'] == 'admin'): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($user['first_name']) . ' ' . htmlspecialchars($user['last_name']) ?>
-                                </td>
-                                <td><?= htmlspecialchars($user['email']) ?></td>
-                                <td><?= htmlspecialchars($user['role']) ?></td>
-                                <td>
-                                    <a href="index.php?page=edit_user&user_id=<?= $user['user_id'] ?>" class="btn btn-primary btn-sm">แก้ไข</a>
-                                    <a href="index.php?page=delete_user&user_id=<?= $user['user_id'] ?>"
-                                        data-confirm="ยืนยันการลบผู้ใช้ '<?= htmlspecialchars($user['first_name']) ?>'?"
-                                        class="btn btn-danger btn-sm">ลบ</a>
-                                </td>
-                            </tr>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
 
-            <h2>ผู้ใช้ทั่วไป</h2>
-            <table class="user-table">
-                <thead>
+    <h2>ผู้ใช้ทั่วไป</h2>
+    <table class="user-table">
+        <thead>
+            <tr>
+                <th>ชื่อ</th>
+                <th>อีเมล</th>
+                <th>Role</th>
+                <th>การกระทำ</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($users as $user): ?>
+                <?php if ($user['role'] != 'admin'): ?>
                     <tr>
-                        <th>ชื่อ</th>
-                        <th>อีเมล</th>
-                        <th>Role</th>
-                        <th>การกระทำ</th>
+                        <td><?= htmlspecialchars($user['first_name']) . ' ' . htmlspecialchars($user['last_name']) ?>
+                        </td>
+                        <td><?= htmlspecialchars($user['email']) ?></td>
+                        <td><?= htmlspecialchars($user['role']) ?></td>
+                        <td>
+                            <a href="index.php?page=edit_user&user_id=<?= $user['user_id'] ?>" class="btn btn-outline-primary btn-sm">แก้ไข</a>
+                            <a href="index.php?page=delete_user&user_id=<?= $user['user_id'] ?>"
+                                data-confirm="ยืนยันการลบผู้ใช้ '<?= htmlspecialchars($user['first_name']) ?>'?"
+                                class="btn btn-outline-danger btn-sm">ลบ</a>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($users as $user): ?>
-                        <?php if ($user['role'] != 'admin'): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($user['first_name']) . ' ' . htmlspecialchars($user['last_name']) ?>
-                                </td>
-                                <td><?= htmlspecialchars($user['email']) ?></td>
-                                <td><?= htmlspecialchars($user['role']) ?></td>
-                                <td>
-                                    <a href="index.php?page=edit_user&user_id=<?= $user['user_id'] ?>" class="btn btn-primary btn-sm">แก้ไข</a>
-                                    <a href="index.php?page=delete_user&user_id=<?= $user['user_id'] ?>"
-                                        data-confirm="ยืนยันการลบผู้ใช้ '<?= htmlspecialchars($user['first_name']) ?>'?"
-                                        class="btn btn-danger btn-sm">ลบ</a>
-                                </td>
-                            </tr>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="item layoutofcon4">
-        <?php include_once 'layouts/con4.php'; ?>
-    </div>
-
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
 </div>
 
 <?php include_once 'layouts/bottom_layouts.php';?>
