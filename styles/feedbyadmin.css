@@ -145,6 +145,27 @@ input[type="file"] {
     flex-direction: column;
     gap: 16px;
     margin-top: 15px;
+    max-height: 480px !important; /* Adjusted slightly smaller to fit better on standard screens */
+    overflow-y: auto !important;
+    padding-right: 6px;
+}
+
+/* Custom scrollbar for news-wrapper */
+.news-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+.news-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.news-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(62, 123, 39, 0.25);
+    border-radius: 4px;
+}
+
+.news-wrapper::-webkit-scrollbar-thumb:hover {
+    background: rgba(62, 123, 39, 0.45);
 }
 
 .news-card {
@@ -233,13 +254,12 @@ input[type="file"] {
     color: #85A947;
     margin-bottom: 10px;
 }
-
 /* Edit & Delete Specific Announcement Buttons */
 .news-admin-actions {
     display: flex;
     gap: 8px;
     margin-top: 10px;
-    padding-top: 8px;
+    padding: 8px 14px 14px 14px;
     border-top: 1px dashed rgba(18, 53, 36, 0.08);
 }
 
@@ -309,6 +329,20 @@ input[type="file"] {
     color: #123524;
     line-height: 1.6;
     white-space: pre-wrap;
+}
+
+/* Clickable news card link container */
+.news-card-link {
+    text-decoration: none !important;
+    color: inherit !important;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.news-card-link:hover {
+    color: inherit !important;
+    text-decoration: none !important;
 }
 
 

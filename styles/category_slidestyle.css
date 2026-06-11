@@ -20,6 +20,8 @@
     color: #123524;
     margin-top: 0;
     margin-bottom: 20px;
+    border-bottom: 2px solid rgba(62, 123, 39, 0.1);
+    padding-bottom: 12px;
 }
 
 .slider-wrapper {

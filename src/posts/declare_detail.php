@@ -26,12 +26,10 @@ if (isset($_GET['post'])) {
         <?php if (!empty($post['image'])): ?>
             <img src="<?php echo htmlspecialchars($post['image']); ?>" alt="News Image">
         <?php endif; ?>
-        <div class="insidecon3 mb-4">
-            <div class="announce-detail-desc">
-                <?php echo nl2br(htmlspecialchars($post['description'])); ?>
-            </div>
+        <div class="announce-detail-desc mb-4">
+            <?php echo nl2br(htmlspecialchars($post['description'])); ?>
         </div>
-        <p class="text-muted mb-4"><small>Posted on: <?php echo date('F j, Y, g:i a', strtotime($post['created_at'])); ?></small></p>
+        <p class="text-muted mb-4"><small>โพสต์เมื่อ: <?php echo formatThaiDate($post['created_at']); ?></small></p>
         <button type="button" class="btn btn-primary w-100" onclick="window.location.href = 'index.php?page=homepage'">ย้อนกลับ</button>
     </div>
 </div>

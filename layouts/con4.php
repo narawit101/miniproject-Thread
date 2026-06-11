@@ -81,6 +81,7 @@ $current_page = $_GET['page'] ?? 'homepage';
                 $cardClass = $hasImage ? 'news-card has-image d-flex flex-column' : 'news-card d-flex flex-column';
                 
                 echo '<div class="' . $cardClass . '">';
+                echo '<a href="index.php?page=declare_detail&post=' . $announce_id . '" target="_blank" class="news-card-link">';
                 if ($hasImage) {
                     echo '<div class="news-card-img-wrap">';
                     echo '<img src="' . htmlspecialchars($announce['image']) . '" alt="News Image">';
@@ -92,11 +93,13 @@ $current_page = $_GET['page'] ?? 'homepage';
                 echo '<span class="news-date">' . formatThaiDate($announce['created_at'], true) . '</span>';
                 echo '</div>';
                 echo '<div class="news-title">';
-                echo '<a href="index.php?page=declare_detail&post=' . $announce_id . '" target="_blank">' . htmlspecialchars($announce['title']) . '</a>';
+                echo htmlspecialchars($announce['title']);
                 echo '</div>';
                 echo '<div class="news-description flex-grow-1">';
                 echo htmlspecialchars(mb_strimwidth($announce['description'], 0, 100, '...'));
                 echo '</div>';
+                echo '</div>'; // close news-content
+                echo '</a>'; // close news-card-link
                 if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
                     echo '<div class="news-admin-actions">';
                     echo '<button class="btn-edit-announce" onclick="window.location.href=\'index.php?page=feedbyadmin&edit=' . $announce_id . '\'">';
@@ -107,7 +110,6 @@ $current_page = $_GET['page'] ?? 'homepage';
                     echo '</button>';
                     echo '</div>';
                 }
-                echo '</div>';
                 echo '</div>';
             }
         } else {

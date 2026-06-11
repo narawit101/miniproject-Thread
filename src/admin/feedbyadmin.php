@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             header("Location: " . $redirect_url);
             exit();
         }
-        $target_dir = "uploads/";
+        $target_dir = "uploads/announcements/";
         if (!is_dir($target_dir)) {
             mkdir($target_dir, 0755, true);
         }
