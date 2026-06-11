@@ -1,8 +1,7 @@
 <?php
 require_once 'config/server.php';
-
-// session_start();
 include_once 'layouts/dataheader.php';
+require_once 'config/swal_helper.php';
 
 // ตรวจสอบว่าผู้ใช้เป็น admin หรือไม่
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
@@ -36,46 +35,52 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt = $conn->prepare($sql);
     $stmt->execute([$first_name, $last_name, $email, $role, $user_id]);
 
-    // กลับไปที่หน้าจัดการผู้ใช้
-    header('Location: index.php?page=manage_users&msg=อัปเดตข้อมูลผู้ใช้สำเร็จ');
+    set_swal('success', 'อัปเดตข้อมูลสำเร็จ! ✅', 'ข้อมูลผู้ใช้ถูกบันทึกแล้ว');
+    header('Location: index.php?page=manage_users');
     exit();
 }
 ?>
 <?php include_once 'layouts/top_layouts.php'; ?>
 
-<!-- <div class="bodyofcontent" style="max-width: 800px; margin: 0 auto; padding: 20px;"> -->
-
-    <div class="item layoutofcon3" >
+<div class="bodyofcontent">
+    <div class="item layoutofcon3">
         <h1>แก้ไขข้อมูลผู้ใช้</h1>
 
         <div class="insidecon3">
-        <form method="POST" class="user-edit-form" style="display: flex; flex-direction: column;">
-            <label for="first_name" style="margin-bottom: 5px; font-weight: bold;">ชื่อ:</label>
-            <input type="text" name="first_name" value="<?= htmlspecialchars($user['first_name']) ?>" required
-                style="padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 5px;">
+            <form method="POST" class="user-edit-form mt-3">
+                <div class="mb-3">
+                    <label for="first_name" class="form-label font-weight-bold">ชื่อ:</label>
+                    <input type="text" id="first_name" name="first_name" class="form-control" value="<?= htmlspecialchars($user['first_name']) ?>" required>
+                </div>
 
-            <label for="last_name" style="margin-bottom: 5px; font-weight: bold;">นามสกุล:</label>
-            <input type="text" name="last_name" value="<?= htmlspecialchars($user['last_name']) ?>" required
-                style="padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 5px;">
+                <div class="mb-3">
+                    <label for="last_name" class="form-label font-weight-bold">นามสกุล:</label>
+                    <input type="text" id="last_name" name="last_name" class="form-control" value="<?= htmlspecialchars($user['last_name']) ?>" required>
+                </div>
 
-            <label for="email" style="margin-bottom: 5px; font-weight: bold;">อีเมล:</label>
-            <input type="email" name="email" value="<?= htmlspecialchars($user['email']) ?>" required
-                style="padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 5px;">
+                <div class="mb-3">
+                    <label for="email" class="form-label font-weight-bold">อีเมล:</label>
+                    <input type="email" id="email" name="email" class="form-control" value="<?= htmlspecialchars($user['email']) ?>" required>
+                </div>
 
-            <label for="role" style="margin-bottom: 5px; font-weight: bold;">Role:</label>
-            <select name="role" required
-                style="padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 5px;">
-                <option value="user" <?= $user['role'] == 'user' ? 'selected' : '' ?>>User</option>
-                <option value="admin" <?= $user['role'] == 'admin' ? 'selected' : '' ?>>Admin</option>
-            </select>
+                <div class="mb-3">
+                    <label for="role" class="form-label font-weight-bold">สิทธิ์การใช้งาน (Role):</label>
+                    <select id="role" name="role" class="form-select" required>
+                        <option value="user" <?= $user['role'] == 'user' ? 'selected' : '' ?>>User (สมาชิกทั่วไป)</option>
+                        <option value="admin" <?= $user['role'] == 'admin' ? 'selected' : '' ?>>Admin (ผู้ดูแลระบบ)</option>
+                    </select>
+                </div>
 
-            <div class="form-buttons" style="display: flex; justify-content: space-between;">
-                <button type="submit" class="btn btn-save"
-                    style="padding: 10px 20px; border: none; border-radius: 5px; background-color: #4CAF50; color: white; cursor: pointer;">บันทึก</button>
-                <button type="button" class="btn btn-cancel" onclick="window.location.href = 'index.php?page=manage_users'"
-                    style="padding: 10px 20px; border: none; border-radius: 5px; background-color: #f44336; color: white; cursor: pointer;">ย้อนกลับ</button>
-            </div>
-        </form>
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary">บันทึกข้อมูล</button>
+                    <button type="button" class="btn btn-outline-primary" onclick="window.location.href = 'index.php?page=manage_users'">ย้อนกลับ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="item layoutofcon4">
+        <?php include_once 'layouts/con4.php'; ?>
     </div>
 </div>
 

@@ -1,5 +1,6 @@
 <?php
 include_once 'layouts/dataheader.php';
+require_once 'config/swal_helper.php';
 $user_id = $_SESSION['user_id'];
 
 if (!isset($_SESSION['user_id'])) {
@@ -24,18 +25,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $errors[] = 'รหัสผ่านไม่ตรงกัน!';
     }
 
-    // แสดงข้อความแสดงข้อผิดพลาดถ้ามี
     if (!empty($errors)) {
-        echo '<div class="error-box">' . implode('<br>', $errors) . '</div>';
+        set_swal('error', 'ไม่สามารถเปลี่ยนรหัสผ่านได้', implode(' | ', $errors));
+        header('Location: index.php?page=edit_password');
+        exit();
     } else {
-        // ถ้ารหัสผ่านถูกต้อง ให้แฮชและอัปเดตในฐานข้อมูล
         $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-
-        // อัปเดตรหัสผ่านในฐานข้อมูล
         $stmt = $conn->prepare("UPDATE users SET password = ? WHERE user_id = ?");
         $stmt->execute([$hashed_password, $user_id]);
-
-        // กลับไปยังหน้าโปรไฟล์
+        set_swal('success', 'เปลี่ยนรหัสผ่านสำเร็จ!', 'รหัสผ่านใหม่ของคุณถูกบันทึกแล้ว');
         header('Location: index.php?page=profile');
         exit();
     }
@@ -53,80 +51,27 @@ include_once 'layouts/top_layouts.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เปลี่ยนรหัสผ่าน</title>
 </head>
-<style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            /* display: flex; */
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #333;
-        }
-        input[type="password"] {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button[type="submit"], button[type="button"] {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button[type="submit"]:hover, button[type="button"]:hover {
-            background-color: #45a049;
-        }
-        .error-box {
-            text-align: center;
-    border: 1px solid red;
-    background-color: #ffe6e6; /* Light red background */
-    color: red; /* Text color */
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-    /* font-weight: bold; */
-}
-    </style>
+<link rel="stylesheet" href="styles/editprofilestyle.css">
 <body>
 <div class="item layoutofcon3">
 
     <h1>เปลี่ยนรหัสผ่าน</h1>
     <div class="insidecon3">
-    <form action="index.php?page=edit_password" method="POST">
-        <div class="form-group">
-            <label for="new_password">รหัสผ่านใหม่:</label>
-            <input type="password" id="new_password" name="new_password" required>
+    <form action="index.php?page=edit_password" method="POST" class="mt-3">
+        <div class="mb-3">
+            <label for="new_password" class="form-label font-weight-bold">รหัสผ่านใหม่:</label>
+            <input type="password" id="new_password" name="new_password" class="form-control" required>
         </div>
 
-        <div class="form-group">
-            <label for="confirm_password">ยืนยันรหัสผ่าน:</label>
-            <input type="password" id="confirm_password" name="confirm_password" required>
+        <div class="mb-3">
+            <label for="confirm_password" class="form-label font-weight-bold">ยืนยันรหัสผ่านใหม่:</label>
+            <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
         </div>
 
-        <button type="submit">บันทึกการเปลี่ยนแปลง</button>
-        <button type="button" onclick="window.history.back();">ย้อนกลับ</button>
+        <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary w-100">บันทึกการเปลี่ยนแปลง</button>
+            <button type="button" class="btn btn-secondary w-100" onclick="window.history.back();">ย้อนกลับ</button>
+        </div>
     </form>
 </body>
 </div></div>

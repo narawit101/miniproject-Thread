@@ -1,0 +1,322 @@
+/* top_layouts.php stylesheet */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(45deg, #85A947, #123524);
+    background-attachment: fixed;
+    min-height: 100vh;
+    font-family: 'Kanit', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    width: 100%;
+    background: rgba(18, 53, 36, 0.95);
+    padding: 10px 50px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    width: 120px;
+    height: auto;
+    transition: transform 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+.nav-link-custom {
+    text-decoration: none;
+    color: #F4FFC3;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    padding: 8px 15px;
+    position: relative;
+    transition: color 0.3s ease, background-color 0.2s ease, padding-left 0.2s ease;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.nav-link-custom:hover {
+    color: #ffffff;
+}
+
+/* Desktop navbar hover animations (top & bottom expanding lines) */
+@media (min-width: 992px) {
+    .nav-link-custom::before,
+    .nav-link-custom::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 3px;
+        background-color: #85A947;
+        transition: width 0.3s ease-in-out;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .nav-link-custom::before {
+        top: 0;
+    }
+
+    .nav-link-custom::after {
+        bottom: 0;
+    }
+
+    .nav-link-custom:hover::before,
+    .nav-link-custom:hover::after,
+    .nav-link-custom.active::before,
+    .nav-link-custom.active::after {
+        width: 100%;
+    }
+    
+    .nav-link-custom.active {
+        color: #ffffff;
+    }
+}
+
+/* Responsive Overrides for Mobile and Tablet */
+@media (max-width: 991.98px) {
+    .header {
+        padding: 10px 20px;
+    }
+
+    .logo {
+        width: 90px;
+    }
+
+    .search {
+        margin-left: 0 !important;
+        margin-top: 12px;
+        margin-bottom: 12px;
+    }
+
+    .nav-link-custom {
+        display: block;
+        padding: 10px 15px;
+        border-radius: 8px;
+    }
+
+    .nav-link-custom:hover,
+    .nav-link-custom.active {
+        background-color: rgba(244, 255, 195, 0.1);
+        padding-left: 20px;
+        color: #ffffff;
+    }
+
+    .sub-menu-wrap {
+        width: 250px;
+    }
+}
+
+/* Search Box styling */
+.search {
+    display: flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background: rgba(244, 255, 195, 0.15);
+    border: 1px solid rgba(244, 255, 195, 0.3);
+    margin-left: 20px;
+    width: 250px;
+    transition: all 0.3s ease;
+}
+
+.search:focus-within {
+    background: rgba(244, 255, 195, 0.25);
+    border-color: #F4FFC3;
+    box-shadow: 0 0 8px rgba(244, 255, 195, 0.4);
+}
+
+.search-icon {
+    color: #F4FFC3;
+    font-size: 20px;
+    user-select: none;
+}
+
+.search-input {
+    font-size: 15px;
+    color: #ffffff;
+    margin-left: 8px;
+    outline: none;
+    border: none;
+    background: transparent;
+    width: 100%;
+    font-family: 'Kanit', sans-serif;
+}
+
+.search-input::placeholder {
+    color: rgba(244, 255, 195, 0.6);
+}
+
+/* User Info Badge */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.profile-pic {
+    width: 45px;
+    height: 45px;
+    object-fit: cover;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #85A947;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.profile-pic:hover {
+    transform: scale(1.08);
+    border-color: #F4FFC3;
+}
+
+/* Submenu Dropdown Card */
+.sub-menu-wrap {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 280px;
+    max-height: 0px;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    margin-top: 10px;
+}
+
+.sub-menu-wrap.open-menu {
+    max-height: 350px;
+}
+
+.sub-menu {
+    background: #F4FFC3;
+    padding: 20px;
+    border: 1px solid rgba(18, 53, 36, 0.1);
+    border-radius: 12px;
+}
+
+.sub-menu .user-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.sub-menu .user-info img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 12px;
+    border: 2px solid #123524;
+}
+
+.sub-menu .user-info h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #123524;
+    margin: 0;
+}
+
+.sub-menu hr {
+    border: 0;
+    height: 1px;
+    background: rgba(18, 53, 36, 0.15);
+    margin: 15px 0;
+}
+
+.sub-menu-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #123524;
+    margin: 12px 0;
+    transition: transform 0.3s;
+}
+
+.sub-menu-link img {
+    width: 35px;
+    height: 35px;
+    background: rgba(18, 53, 36, 0.1);
+    border-radius: 50%;
+    padding: 6px;
+    margin-right: 12px;
+    transition: background 0.3s;
+}
+
+.sub-menu-link p {
+    margin: 0;
+    flex-grow: 1;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.sub-menu-link span {
+    font-size: 18px;
+    font-weight: bold;
+    transition: transform 0.3s;
+}
+
+.sub-menu-link:hover {
+    transform: translateX(5px);
+}
+
+.sub-menu-link:hover img {
+    background: rgba(18, 53, 36, 0.2);
+}
+
+.sub-menu-link:hover p {
+    font-weight: 600;
+}
+
+/* --- Bootstrap 5 Theme Overrides (Forest Green & Soft Lime) --- */
+.form-control:focus, .form-select:focus, .form-check-input:focus {
+    border-color: #85A947 !important;
+    box-shadow: 0 0 0 0.25rem rgba(133, 169, 71, 0.25) !important;
+}
+
+.btn-primary {
+    background-color: #123524 !important;
+    border-color: #123524 !important;
+    color: #F4FFC3 !important;
+    font-weight: 500 !important;
+    border-radius: 20px !important;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+    background-color: #3E7B27 !important;
+    border-color: #3E7B27 !important;
+    color: #ffffff !important;
+}
+
+.btn-outline-primary {
+    color: #123524 !important;
+    border-color: #123524 !important;
+    border-radius: 20px !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: #123524 !important;
+    color: #F4FFC3 !important;
+}
+
+.form-floating > label {
+    color: #123524 !important;
+}
+
+/* Fix links within bootstrap layout default */
+a {
+    color: #3E7B27;
+}
+a:hover {
+    color: #123524;
+}
+

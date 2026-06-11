@@ -17,7 +17,7 @@ $categories = $stmt->fetchAll();
 </head>
 
 <body>
-    <div class="item layoutofcon2 swiper">
+    <div class="layoutofcon2 swiper">
         <h3>เลือกหมวดหมู่ที่คุณสนใจ</h3>
         <div class="slider-wrapper">
             <div class="categry-list swiper-wrapper">

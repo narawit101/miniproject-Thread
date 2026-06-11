@@ -1,150 +1,105 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>News Card</title>
-    <style>
-
-        .insidecon4 {
-            margin: 20px;
-    padding: 10px;
-    border-radius: 10px;
-    background: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-        }
-
-        .insidecon4 h2 {
-            text-align: center;
-            margin-bottom: 15px;
-            font-size: 18px;
-            color: #333;
-        }
-
-        /* Flexbox to arrange the cards */
-        .news-wrapper {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            gap: 20px;
-        }
-
-        .news-card {
-            border-radius: 12px;
-            background-color: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            width: 300px; /* กำหนดขนาดความกว้างของการ์ด */
-        }
-
-        .news-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .news-card img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .news-content {
-            padding: 20px;
-            background-color: #fff;
-        }
-
-        .news-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #333;
-            line-height: 1.4;
-        }
-
-        .news-title a {
-            text-decoration: none;
-            color: #1a73e8; /* สีลิงก์ */
-            transition: color 0.3s ease;
-        }
-
-        .news-title a:hover {
-            color: #0056b3;
-        }
-
-        .news-description {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 15px;
-            line-height: 1.6;
-        }
-
-        .news-time {
-            font-size: 12px;
-            color: #999;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .news-card {
-                width: 100%; /* กำหนดขนาดการ์ดให้เต็มหน้าจอในอุปกรณ์เล็ก */
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$current_page = $_GET['page'] ?? 'homepage';
+?>
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="styles/feedbyadmin.css?v=<?= time() ?>">
+<script>
+    function deletePost(index) {
+        Swal.fire({
+            title: 'คุณต้องการลบประกาศนี้หรือไม่?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e53e3e',
+            cancelButtonColor: '#718096',
+            confirmButtonText: 'ยืนยัน ลบ',
+            cancelButtonText: 'ยกเลิก'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = 'index.php?page=<?= htmlspecialchars($current_page) ?>&delete=' + index;
             }
+        });
+    }
+</script>
+
+<div class="insidecon4">
+    <h2>ประกาศ</h2>
+    <div class="news-wrapper">
+        <?php
+        global $conn;
+        if (!isset($conn)) {
+            require_once __DIR__ . '/../config/server.php';
         }
 
-    </style>
-    <script>
-        function deletePost(index) {
-            if (confirm('คุณต้องการลบประกาศนี้หรือไม่?')) {
-                window.location.href = window.location.pathname + '?delete=' + index;
+        if (isset($_GET['delete'])) {
+            // Security verification: Only admin can delete announcements
+            if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+                header('Location: index.php?page=login');
+                exit();
             }
-        }
-    </script>
-</head>
-<body>
-    <div class="insidecon4">
-        <h2>ประกาศ</h2>
-        <div class="news-wrapper">
-            <?php
-            $file_path = __DIR__ . '/../config/posts.json';
-            if (!file_exists($file_path)) {
-                file_put_contents($file_path, json_encode([]));
-            }
-
-            $json_data = file_get_contents($file_path);
-            $posts = json_decode($json_data, true);
-
-            if (isset($_GET['delete'])) {
-                $delete_index = $_GET['delete'];
-                if (is_numeric($delete_index) && isset($posts[$delete_index])) {
-                    array_splice($posts, $delete_index, 1);
-                    file_put_contents($file_path, json_encode($posts, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-                    
-                    // ใช้ JavaScript เพื่อรีเฟรชหน้า
-                    echo '<script>window.location.href = "index.php?page=homepage";</script>';
-                    exit();
-                } else {
-                    echo '<p>ไม่พบประกาศที่ต้องการลบ</p>';
+            
+            $delete_id = $_GET['delete'];
+            if (is_numeric($delete_id)) {
+                // Fetch image first to delete it from disk
+                $stmt = $conn->prepare("SELECT image FROM announcements WHERE announcement_id = ?");
+                $stmt->execute([$delete_id]);
+                $announce = $stmt->fetch();
+                if ($announce && !empty($announce['image']) && file_exists($announce['image'])) {
+                    unlink($announce['image']);
                 }
-            }
-
-            if (is_array($posts)) {
-                foreach ($posts as $index => $post) {
-                    echo '<div class="news-card">';
-                    echo '<img src="' . htmlspecialchars($post['image']) . '" alt="News Image">';
-                    echo '<div class="news-content">';
-                    echo '<div class="news-title">';
-                    echo '<a href="index.php?page=declare_detail&post=' . $index . '" target="_blank">' . htmlspecialchars($post['title']) . '</a>';
-                    echo '</div>';
-                    echo '<button onclick="window.location.href=\'index.php?page=feedbyadmin&edit=' . $index . '\'">แก้ไข</button>';
-                    echo '<button onclick="deletePost(' . $index . ')">ลบ</button>';
-                    echo '</div>';
-                    echo '</div>';
-                }
+                
+                // Delete from DB
+                $stmt = $conn->prepare("DELETE FROM announcements WHERE announcement_id = ?");
+                $stmt->execute([$delete_id]);
+                
+                // Flash message
+                require_once __DIR__ . '/../config/swal_helper.php';
+                set_swal('success', 'ลบประกาศสำเร็จ!', 'ประกาศได้ถูกลบออกจากระบบเรียบร้อยแล้ว');
+                
+                echo '<script>window.location.href = "index.php?page=' . htmlspecialchars($current_page) . '";</script>';
+                exit();
             } else {
-                echo '<p>ไม่มีข้อมูลโพสต์</p>';
+                echo '<p>ไม่พบประกาศที่ต้องการลบ</p>';
             }
-            ?>
-        </div>
+        }
+
+        $stmt = $conn->prepare("SELECT * FROM announcements ORDER BY announcement_id DESC");
+        $stmt->execute();
+        $announcements = $stmt->fetchAll();
+
+        if (is_array($announcements) && !empty($announcements)) {
+            foreach ($announcements as $announce) {
+                $announce_id = $announce['announcement_id'];
+                echo '<div class="news-card d-flex flex-column">';
+                if (!empty($announce['image'])) {
+                    echo '<img src="' . htmlspecialchars($announce['image']) . '" alt="News Image">';
+                } else {
+                    echo '<div class="news-no-image-header d-flex align-items-center justify-content-center">';
+                    echo '<span class="material-symbols-outlined">campaign</span>';
+                    echo '</div>';
+                }
+                echo '<div class="news-content d-flex flex-column flex-grow-1">';
+                echo '<div class="news-title">';
+                echo '<a href="index.php?page=declare_detail&post=' . $announce_id . '" target="_blank">' . htmlspecialchars($announce['title']) . '</a>';
+                echo '</div>';
+                echo '<div class="news-description flex-grow-1">';
+                echo htmlspecialchars(mb_strimwidth($announce['description'], 0, 100, '...'));
+                echo '</div>';
+                if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+                    echo '<div class="d-flex justify-content-end gap-2 mt-3 pt-2 border-top">';
+                    echo '<button class="btn-edit-announce" onclick="window.location.href=\'index.php?page=feedbyadmin&edit=' . $announce_id . '\'">แก้ไข</button>';
+                    echo '<button class="btn-delete-announce" onclick="deletePost(' . $announce_id . ')">ลบ</button>';
+                    echo '</div>';
+                }
+                echo '</div>';
+                echo '</div>';
+            }
+        } else {
+            echo '<p class="text-center w-100 my-4 text-muted">ไม่มีข้อมูลโพสต์</p>';
+        }
+        ?>
     </div>
-</body>
-</html>
+</div>

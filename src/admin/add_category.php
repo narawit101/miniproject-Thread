@@ -1,6 +1,7 @@
 <?php
-require_once 'config/server.php'; // เรียกใช้ไฟล์ server.php เพื่อเชื่อมต่อกับฐานข้อมูล
-include_once 'layouts/dataheader.php'; // เรียกใช้ไฟล์ dataheader.php เพื่อรวมส่วนหัวของหน้าเว็บ
+require_once 'config/server.php';
+include_once 'layouts/dataheader.php';
+require_once 'config/swal_helper.php';
 
 // ตรวจสอบสิทธิ์ของผู้ใช้
 if ($_SESSION['role'] !== 'admin') { // ถ้าผู้ใช้ไม่ใช่ผู้ดูแลระบบ
@@ -36,11 +37,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_category'])) { // 
         }
 
         // แทรกหมวดหมู่ใหม่
-        if (!isset($error_message)) { // ถ้าไม่มีข้อผิดพลาด
-            $stmt = $conn->prepare("INSERT INTO categories (category_name, categorie_icon) VALUES (?, ?)"); // เตรียมคำสั่ง SQL
-            $stmt->execute([$category_name, $icon_path]); // รันคำสั่ง SQL พร้อมกับค่าชื่อหมวดหมู่และเส้นทางไอคอน
-            header('Location: index.php?page=add_category'); // เปลี่ยนเส้นทางไปที่หน้า add_category.php
-            exit(); // หยุดการทำงานของสคริปต์
+        if (!isset($error_message)) {
+            $stmt = $conn->prepare("INSERT INTO categories (category_name, categorie_icon) VALUES (?, ?)");
+            $stmt->execute([$category_name, $icon_path]);
+            set_swal('success', 'เพิ่มหมวดหมู่สำเร็จ!', 'หมวดหมู่ "' . htmlspecialchars($category_name) . '" ถูกเพิ่มเข้าระบบแล้ว');
+            header('Location: index.php?page=add_category');
+            exit();
         }
     }
 }
@@ -54,14 +56,16 @@ if (isset($_GET['delete_category_id'])) { // ถ้ามีการส่ง�
     $stmt->execute([$category_id]); // รันคำสั่ง SQL พร้อมกับค่า ID ของหมวดหมู่
     $count = $stmt->fetchColumn(); // รับค่าจำนวนแถวที่ตรงกับเงื่อนไข
 
-    if ($count > 0) { // ถ้ามีโพสต์ที่เชื่อมโยงกับหมวดหมู่นี้
-        $error_message = "ไม่สามารถลบหมวดหมู่นี้ได้ เนื่องจากมีโพสต์ที่เชื่อมโยงอยู่"; // แสดงข้อความข้อผิดพลาด
+    if ($count > 0) {
+        set_swal('warning', 'ไม่สามารถลบได้!', 'หมวดหมู่นี้มีโพสต์ที่เชื่อมโยงอยู่ กรุณาย้ายโพสต์ก่อน');
+        header('Location: index.php?page=add_category');
+        exit();
     } else {
-        // ดำเนินการลบหมวดหมู่
-        $stmt = $conn->prepare("DELETE FROM categories WHERE category_id = ?"); // เตรียมคำสั่ง SQL
-        $stmt->execute([$category_id]); // รันคำสั่ง SQL พร้อมกับค่า ID ของหมวดหมู่
-        header('Location: index.php?page=add_category'); // เปลี่ยนเส้นทางไปที่หน้า add_category.php
-        exit(); // หยุดการทำงานของสคริปต์
+        $stmt = $conn->prepare("DELETE FROM categories WHERE category_id = ?");
+        $stmt->execute([$category_id]);
+        set_swal('success', 'ลบหมวดหมู่สำเร็จ!', 'หมวดหมู่ถูกลบออกจากระบบแล้ว');
+        header('Location: index.php?page=add_category');
+        exit();
     }
 }
 
@@ -79,9 +83,10 @@ if (isset($_POST['update_category'])) { // ถ้ามีการส่งข�
 
             // อัปเดตไอคอนในฐานข้อมูล
             $stmt = $conn->prepare("UPDATE categories SET categorie_icon = ? WHERE category_id = ?"); // เตรียมคำสั่ง SQL
-            $stmt->execute([$icon_path, $category_id]); // รันคำสั่ง SQL พร้อมกับค่าเส้นทางไอคอนและ ID ของหมวดหมู่
-            header('Location: index.php?page=add_category'); // เปลี่ยนเส้นทางไปที่หน้า add_category.php
-            exit(); // หยุดการทำงานของสคริปต์
+            $stmt->execute([$icon_path, $category_id]);
+            set_swal('success', 'อัปเดตไอคอนสำเร็จ!', 'ไอคอนหมวดหมู่ถูกอัปเดตแล้ว');
+            header('Location: index.php?page=add_category');
+            exit();
         } else {
             $error_message = "กรุณาอัปโหลดไฟล์รูปภาพเท่านั้น!"; // แสดงข้อความข้อผิดพลาด
         }
@@ -104,61 +109,62 @@ include_once 'layouts/top_layouts.php'; // เรียกใช้ไฟล์ 
         <div class="insidecon3">
             <div class="insidecreatepost">
                 <div class="boxofcate">
-
-                    <?php if (isset($error_message)): ?> <!-- ถ้ามีข้อความข้อผิดพลาด -->
-                        <div class="error-message" style="color: red;"><?= htmlspecialchars($error_message) ?></div>
-                        <!-- แสดงข้อความข้อผิดพลาด -->
-                    <?php endif; ?>
-                    <form method="POST" action="index.php?page=add_category" enctype="multipart/form-data">
-                        <!-- ฟอร์มสำหรับเพิ่มหมวดหมู่ -->
-                        <label for="category_name">ชื่อหมวดหมู่:</label>
-                        <input type="text" id="category_name" name="category_name" required>
-                        <!-- ช่องกรอกชื่อหมวดหมู่ -->
-                        <input type="file" id="icon" name="icon" accept="image/*" required
-                            onchange="previewNewIcon(event)"> <!-- ช่องเลือกไฟล์ไอคอน -->
-                        <div class="new-icon-preview">
-                            <p>ตัวอย่างไอคอนใหม่:</p>
-                            <img id="new-icon-preview" alt="New Icon Preview" class="new-category-icon">
-                            <!-- แสดงตัวอย่างไอคอนใหม่ -->
+                    <?php if (isset($error_message)): ?>
+                        <div class="alert alert-danger" role="alert">
+                            <?= htmlspecialchars($error_message) ?>
                         </div>
-                        <button type="submit" name="add_category" class="submit-button">เพิ่มหมวดหมู่</button>
-                        <!-- ปุ่มเพิ่มหมวดหมู่ -->
-                        <button type="button" onclick="history.back()">ย้อนกลับ</button> <!-- ปุ่มย้อนกลับ -->
+                    <?php endif; ?>
+                    
+                    <form method="POST" action="index.php?page=add_category" enctype="multipart/form-data" class="mt-3">
+                        <div class="mb-3">
+                            <label for="category_name" class="form-label font-weight-bold">ชื่อหมวดหมู่:</label>
+                            <input type="text" id="category_name" name="category_name" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="icon" class="form-label font-weight-bold">เลือกไฟล์ไอคอน:</label>
+                            <input type="file" id="icon" name="icon" class="form-control" accept="image/*" required onchange="previewNewIcon(event)">
+                            <div class="new-icon-preview mt-3">
+                                <p class="form-label font-weight-bold">ตัวอย่างไอคอนใหม่:</p>
+                                <img id="new-icon-preview" alt="New Icon Preview" class="img-thumbnail" style="max-height: 100px; display: none;">
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" name="add_category" class="btn btn-primary">เพิ่มหมวดหมู่</button>
+                            <button type="button" class="btn btn-outline-primary" onclick="history.back()">ย้อนกลับ</button>
+                        </div>
                     </form>
                 </div>
             </div>
 
-            <h1 style="color: #333; margin-top: 30px;">หมวดหมู่ที่มีอยู่:</h1>
-            <div class="categories-container">
+            <h2 class="mt-5 mb-4 border-bottom pb-2 font-weight-bold">หมวดหมู่ที่มีอยู่:</h2>
+            <div class="row row-cols-1 row-cols-md-2 g-4">
                 <?php
-                $stmt = $conn->query("SELECT * FROM categories"); // ดึงข้อมูลหมวดหมู่ทั้งหมดจากฐานข้อมูล
-                while ($category = $stmt->fetch(PDO::FETCH_ASSOC)): ?> <!-- วนลูปแสดงข้อมูลหมวดหมู่ -->
-                    <div class="category-card">
-                        <?php if (!empty($category['categorie_icon'])): ?> <!-- ถ้ามีไอคอน -->
-                            <img src="<?= htmlspecialchars($category['categorie_icon']) ?>" alt="Icon"
-                                class="category-icon current-category-icon" id="current-icon-<?= $category['category_id'] ?>">
-                            <!-- แสดงไอคอน -->
-                        <?php endif; ?>
-                        <div class="category-details">
-                            <span class="category-name"><?= htmlspecialchars($category['category_name']) ?></span>
-                            <!-- แสดงชื่อหมวดหมู่ -->
-                            <div class="category-actions">
-                                <form method="POST" action="index.php?page=add_category" enctype="multipart/form-data"
-                                    style="display:inline;"> <!-- ฟอร์มสำหรับอัปเดตไอคอน -->
-                                    <input type="hidden" name="category_id" value="<?= $category['category_id'] ?>">
-                                    <!-- ซ่อนค่า ID ของหมวดหมู่ -->
-                                    <input type="file" name="icon" accept="image/*" class="icon-input"
-                                        data-preview="current-icon-<?= $category['category_id'] ?>"
-                                        onchange="previewIcon(event, <?= $category['category_id'] ?>)">
-                                    <!-- ช่องเลือกไฟล์ไอคอน -->
-                                    <button type="submit" name="update_category" class="update-button">อัปเดตไอคอน</button>
-                                    <!-- ปุ่มอัปเดตไอคอน -->
-                                    <button type="button" onclick="cancelPreview(<?= $category['category_id'] ?>)"
-                                        class="cancel-button">ยกเลิก</button> <!-- ปุ่มยกเลิก -->
-                                </form>
-                                <a href="index.php?page=add_category&delete_category_id=<?= $category['category_id'] ?>"
-                                    onclick="return confirm('ยืนยันการลบหมวดหมู่นี้?')" class="delete-button">ลบ</a>
-                                <!-- ลิงก์สำหรับลบหมวดหมู่ -->
+                $stmt = $conn->query("SELECT * FROM categories");
+                while ($category = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
+                    <div class="col">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="card-body d-flex align-items-center gap-3">
+                                <?php if (!empty($category['categorie_icon'])): ?>
+                                    <img src="<?= htmlspecialchars($category['categorie_icon']) ?>" alt="Icon"
+                                        class="current-category-icon img-thumbnail rounded" id="current-icon-<?= $category['category_id'] ?>" style="width: 60px; height: 60px; object-fit: cover;">
+                                <?php endif; ?>
+                                <div class="flex-grow-1">
+                                    <h5 class="card-title mb-2 text-dark font-weight-bold"><?= htmlspecialchars($category['category_name']) ?></h5>
+                                    
+                                    <form method="POST" action="index.php?page=add_category" enctype="multipart/form-data" class="d-flex align-items-center gap-2 mt-2">
+                                        <input type="hidden" name="category_id" value="<?= $category['category_id'] ?>">
+                                        <input type="file" name="icon" accept="image/*" class="form-control form-control-sm icon-input"
+                                            data-preview="current-icon-<?= $category['category_id'] ?>"
+                                            onchange="previewIcon(event, <?= $category['category_id'] ?>)" style="max-width: 180px;">
+                                        <button type="submit" name="update_category" class="btn btn-sm btn-primary">อัปเดต</button>
+                                        <button type="button" onclick="cancelPreview(<?= $category['category_id'] ?>)" class="btn btn-sm btn-secondary">ยกเลิก</button>
+                                    </form>
+                                    <div class="mt-3 text-end">
+                                        <a href="index.php?page=add_category&delete_category_id=<?= $category['category_id'] ?>"
+                                            data-confirm="ยืนยันการลบหมวดหมู่ '<?= htmlspecialchars($category['category_name']) ?>'?"
+                                            class="btn btn-sm btn-outline-danger">ลบหมวดหมู่</a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -192,11 +198,13 @@ include_once 'layouts/top_layouts.php'; // เรียกใช้ไฟล์ 
     });
 
     function previewNewIcon(event) {
-        const reader = new FileReader(); // สร้างออบเจ็กต์ FileReader
+        const reader = new FileReader();
+        const preview = document.getElementById('new-icon-preview');
         reader.onload = function (e) {
-            document.getElementById('new-icon-preview').src = e.target.result; // แสดงตัวอย่างไอคอนใหม่
+            preview.src = e.target.result;
+            preview.style.display = 'block';
         };
-        reader.readAsDataURL(event.target.files[0]); // อ่านไฟล์ไอคอน
+        reader.readAsDataURL(event.target.files[0]);
     }
 
     function previewIcon(event, categoryId) {

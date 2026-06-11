@@ -17,67 +17,132 @@ A multi-page web discussion board forum application built with PHP and MySQL (PD
 ### 🔑 Administrator Features
 - **User Management:** Access list of registered users to edit their profile information, toggle roles (User/Admin), or remove accounts.
 - **Category Management:** Add new discussion categories, delete inactive categories, and update category icons.
-- **System Announcements:** Create and manage special administrator announcements that display in the sidebar widget (stored and fetched from a local JSON database).
+- **System Announcements:** Create and manage special administrator announcements that display in the sidebar widget (stored and fetched from MySQL database).
 
 ---
 
-## 📁 Reorganized Directory Structure
+## 📁 Directory Structure
 
-The project has been refactored into a **Central Router** architecture to keep the repository root clean:
+The project utilizes a **Central Router** architecture. All traffic passes through `index.php`.
 
 ```text
 miniproject-Thread/
-├── config/                # System configuration and database files
-│   ├── server.php         # MySQL database connection settings via PDO
-│   └── posts.json         # JSON database for admin announcements
-├── layouts/               # Shared UI layouts and components
-│   ├── dataheader.php     # Global session verification and user profile loader
-│   ├── top_layouts.php    # Navigation bar and header structure
-│   ├── category_slide.php # Category swiper slider layout
-│   ├── con4.php           # Sidebar announcement widget component
-│   └── bottom_layouts.php # Footer layout and closing HTML tags
-├── assets/                # Static frontend assets
+├── docker/                    # Docker service configuration
+│   ├── nginx/
+│   │   └── nginx.conf         # Nginx virtual host config (FastCGI → PHP-FPM)
+│   └── php/
+│       ├── Dockerfile         # PHP 8.2-FPM with required extensions
+│       └── php.ini            # PHP runtime settings (upload size, timezone, errors)
+├── config/                    # Application configuration
+│   ├── server.php             # MySQL database connection via PDO (reads from env vars)
+│   └── swal_helper.php        # SweetAlert helper functions
+├── layouts/                   # Shared UI layouts and components
+│   ├── dataheader.php         # Global session verification and user profile loader
+│   ├── top_layouts.php        # Navigation bar and header structure
+│   ├── category_slide.php     # Category swiper slider layout
+│   ├── con4.php               # Sidebar announcement widget component
+│   └── bottom_layouts.php     # Footer layout and closing HTML tags
+├── assets/                    # Static frontend assets
 │   └── js/
-│       └── script.js      # Client-side JavaScript for Swiper and navbar dropdown
-├── src/                   # Structured PHP page scripts (View Modules)
-│   ├── auth/              # login.php, logout.php, register.php
-│   ├── admin/             # admin.php, manage_users.php, add_category.php, etc.
-│   ├── user/              # profile.php, edit_profile.php, edit_password.php
-│   └── posts/             # homepage.php, post.php, comments and likes actions
-├── index.php              # Central Router (Single entry point)
-├── README.md              # Project overview and installation guide (English)
-├── agent.md               # AI developer guidelines and coding instructions (English)
-└── context.md             # Business domain context, roles, and schema diagrams (English)
+│       └── script.js          # Client-side JavaScript for Swiper and navbar dropdown
+├── src/                       # Structured PHP page scripts (View Modules)
+│   ├── auth/                  # login.php, logout.php, register.php
+│   ├── admin/                 # admin.php, manage_users.php, add_category.php, etc.
+│   ├── user/                  # profile.php, edit_profile.php, edit_password.php
+│   └── posts/                 # homepage.php, post.php, comments and likes actions
+├── docker-compose.yml         # Docker Compose: Nginx + PHP-FPM + MySQL + phpMyAdmin
+├── .env                       # Environment variables (DB credentials — not committed)
+├── .env.example               # Template for .env file
+├── db.sql                     # Database initialization script (auto-imported by Docker)
+├── index.php                  # Central Router (Single entry point)
+├── README.md                  # Project overview and setup guide
+├── AGENT.md                   # AI developer guidelines and coding instructions
+└── CONTEXT.md                 # Business domain context, roles, and schema diagrams
 ```
 
 ---
 
-## 🛠️ Installation & Setup
+## 🐳 Installation & Setup (Docker)
 
-### 📋 Prerequisites
-1. Local web server bundle like **XAMPP**, **Laragon**, or **MAMP** running PHP 7.4+ and MySQL.
-2. A database administration tool (e.g. **phpMyAdmin** or **HeidiSQL**).
+> **Prerequisites:** Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) before proceeding.
 
-### 🚀 Setup Steps
-1. **Copy Files:**
-   Clone or copy the `miniproject-Thread` project directory into the document root of your local web server (e.g., `C:/xampp/htdocs/` for XAMPP).
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd miniproject-Thread
+```
 
-2. **Setup Database:**
-   - Go to `http://localhost/phpmyadmin/`.
-   - Create a new database named **`dpi_db`** (Collation: `utf8mb4_general_ci`).
-   - Import the database schema tables (`users`, `categories`, `posts`, `comments`, `likes`).
+### 2. Configure Environment Variables
+Copy the example env file and fill in your credentials:
+```bash
+copy .env.example .env
+```
 
-3. **Check Connection Configuration:**
-   - Verify server host, database name, username, and password credentials inside:
-     [config/server.php](file:///c:/D/thread/miniproject-Thread/config/server.php)
-     ```php
-     $host = 'localhost';
-     $dbname = 'dpi_db';
-     $user = 'root';
-     $pass = ''; // Default XAMPP password is empty
-     ```
+Edit `.env`:
+```env
+DB_NAME=dpi_db
+DB_USER=dpi_user
+DB_PASS=your_password_here
+DB_ROOT_PASS=your_root_password_here
+```
 
-4. **Launch Application:**
-   - Ensure Apache and MySQL are running on your server.
-   - Navigate to `http://localhost/miniproject-Thread/index.php` in your browser.
-   - Users registering with the email **`admin@gmail.com`** automatically receive administrator privileges.
+### 3. Start All Services
+```bash
+# First time (build images + start containers)
+docker compose up -d --build
+
+# Subsequent runs
+docker compose up -d
+```
+
+Docker will automatically:
+- 🐘 Build the PHP 8.2-FPM container with all required extensions
+- 🌐 Start Nginx on port `8080`
+- 🗄️ Start MySQL and **auto-import `db.sql`** to initialize the database
+- 🖥️ Start phpMyAdmin on port `8081`
+
+### 4. Access the Application
+
+| Service | URL |
+|---|---|
+| 🌐 Web Application | http://localhost:8080 |
+| 🖥️ phpMyAdmin | http://localhost:8081 |
+
+### 5. Default Admin Account
+Login with the pre-seeded administrator account:
+- **Email:** `admin@gmail.com`
+- **Password:** `123456`
+
+### 6. Stop Services
+```bash
+docker compose down
+
+# Stop and remove database volume (full reset)
+docker compose down -v
+```
+
+---
+
+## ⚙️ Docker Services Overview
+
+| Container | Image | Port | Role |
+|---|---|---|---|
+| `dpi_nginx` | `nginx:alpine` | `8080:80` | Web server, serves static files, proxy PHP |
+| `dpi_php` | Custom PHP 8.2-FPM | internal | Executes PHP scripts |
+| `dpi_mysql` | `mysql:8.0` | `3307:3306` | Relational database |
+| `dpi_phpmyadmin` | `phpmyadmin:latest` | `8081:80` | Database GUI management |
+
+---
+
+## 🔑 Database Connection
+
+The `config/server.php` connection reads credentials from environment variables set in `.env`:
+
+```php
+$host   = getenv('DB_HOST') ?: 'mysql';
+$dbname = getenv('DB_NAME') ?: 'dpi_db';
+$user   = getenv('DB_USER') ?: 'dpi_user';
+$pass   = getenv('DB_PASS') ?: '';
+```
+
+> **Note:** The host name is `mysql` (the Docker service name), not `localhost`.

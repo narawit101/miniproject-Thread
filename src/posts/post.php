@@ -174,7 +174,7 @@ include_once 'layouts/top_layouts.php';
                                                 style="color: #007bff; text-decoration: none; margin-right: 10px;">แก้ไข</a>
                                             <a href="index.php?page=delete_comment&comment_id=<?= $comment['comment_id'] ?>&post_id=<?= $post_id ?>"
                                                 style="color: #dc3545; text-decoration: none;"
-                                                onclick="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบคอมเมนต์นี้?')">ลบ</a>
+                                                data-confirm="ยืนยันการลบความคิดเห็นนี้?">ลบ</a>
                                         </div>
                                     <?php endif; ?>
                                 <?php endif; ?>

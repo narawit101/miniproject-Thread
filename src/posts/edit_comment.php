@@ -74,35 +74,46 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['delete_image'])) { //
 <!-- รวมส่วนหัวของ HTML -->
 <?php include_once 'layouts/top_layouts.php'; ?>
 
-<div class="container">
-    <h2>แก้ไขคอมเมนต์</h2>
+<div class="bodyofcontent">
+    <div class="item layoutofcon3">
+        <h1>แก้ไขคอมเมนต์</h1>
+        <div class="insidecon3">
+            <form method="POST" action="" enctype="multipart/form-data" class="mt-3">
+                <div class="mb-3">
+                    <label for="content" class="form-label font-weight-bold">เนื้อหาคอมเมนต์:</label>
+                    <textarea name="content" id="content" class="form-control" rows="5" required><?= htmlspecialchars($comment['content']) ?></textarea>
+                </div>
+                
+                <?php if (!empty($comment['image'])): ?>
+                    <div class="mb-3">
+                        <p class="form-label font-weight-bold">รูปภาพเดิม:</p>
+                        <div class="mb-2">
+                            <img src="uploads/<?= htmlspecialchars($comment['image']) ?>" alt="Comment Image" class="img-thumbnail" style="max-width: 250px; height: auto;">
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDeleteImage()">ลบรูปภาพเดิม</button>
+                    </div>
+                <?php endif; ?>
+
+                <div class="mb-3">
+                    <label for="image" class="form-label font-weight-bold">อัปโหลดรูปภาพใหม่ (ถ้ามี):</label>
+                    <input type="file" name="image" id="image" class="form-control" accept="image/*" onchange="previewImage(event)">
+                    <div class="mt-2">
+                        <img id="image-preview" class="img-thumbnail" style="display: none; max-width: 250px; height: auto;">
+                    </div>
+                    <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="clearImage()">ยกเลิกการเลือกภาพ</button>
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary">อัปเดตคอมเมนต์</button>
+                    <button type="button" class="btn btn-outline-primary" onclick="window.location.href='index.php?page=post&post_id=<?= $post_id ?>'">ย้อนกลับ</button>
+                </div>
+            </form>
+        </div>
+    </div>
     
-    <form method="POST" action="" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="content">เนื้อหาคอมเมนต์:</label>
-            <textarea name="content" id="content" required><?= htmlspecialchars($comment['content']) ?></textarea>
-        </div>
-        
-        <div class="form-group">
-            <?php if (!empty($comment['image'])): // แสดงรูปภาพเดิม ?>
-                <p>รูปภาพเดิม:</p>
-                <img src="uploads/<?= htmlspecialchars($comment['image']) ?>" alt="Comment Image" class="image-preview">
-                <button type="button" onclick="confirmDeleteImage()">ลบรูปภาพ</button>
-            <?php endif; ?>
-        </div>
-
-        <div class="form-group">
-            <label for="image">อัปโหลดรูปภาพใหม่ (ถ้ามี):</label>
-            <input type="file" name="image" id="image" accept="image/*" onchange="previewImage(event)">
-            <img id="image-preview" class="image-preview" style="display: none;">
-            <button type="button" onclick="clearImage()">ยกเลิกการเลือกภาพ</button> <!-- ปุ่มยกเลิกการเลือกภาพ -->
-        </div>
-
-        <div class="form-group">
-            <button type="submit">อัปเดตคอมเมนต์</button>
-            <button type="button" onclick="window.location.href='index.php?page=post&post_id=<?= $post_id ?>'">ย้อนกลับ</button>
-        </div>
-    </form>
+    <div class="item layoutofcon4">
+        <?php include_once 'layouts/con4.php'; ?>
+    </div>
 </div>
 
 <!-- รวมส่วนท้ายของ HTML -->
@@ -110,19 +121,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['delete_image'])) { //
 
 <script>
 function confirmDeleteImage() {
-    if (confirm('คุณแน่ใจหรือไม่ว่าต้องการลบรูปภาพนี้?')) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '';
+    Swal.fire({
+        title: 'ลบรูปภาพนี้?',
+        text: 'คุณแน่ใจหรือว่าต้องการลบรูปภาพของคอมเมนต์นี้?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e53e3e',
+        cancelButtonColor: '#718096',
+        confirmButtonText: 'ลบ',
+        cancelButtonText: 'ยกเลิก',
+    }).then(function(result) {
+        if (result.isConfirmed) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '';
 
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'delete_image';
-        form.appendChild(input);
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'delete_image';
+            form.appendChild(input);
 
-        document.body.appendChild(form);
-        form.submit();
-    }
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
 }
 
 function previewImage(event) {
@@ -139,68 +161,7 @@ function clearImage() {
     const fileInput = document.getElementById('image');
     const imagePreview = document.getElementById('image-preview');
 
-    // รีเซ็ตค่าไฟล์ใน input
     fileInput.value = '';
-    // ซ่อนภาพพรีวิว
     imagePreview.style.display = 'none';
 }
 </script>
-
-<style>
-/* สไตล์ CSS ที่ปรับปรุงใหม่ */
-.container {
-    background-color: #ffffff;
-    border-radius: 8px;
-    padding: 20px;
-    margin: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-h2 {
-    text-align: center;
-    color: #333;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-textarea {
-    width: 100%;
-    height: 100px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    padding: 10px;
-    font-size: 16px;
-}
-
-input[type="file"] {
-    margin-top: 10px;
-}
-
-.image-preview {
-    max-width: 60%;
-    height: auto;
-    border-radius: 10px;
-    margin-top: 10px;
-    display: block;
-    margin: 0 auto;
-}
-
-button {
-    background-color: #5f27cd; /* สีม่วง */
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 10px 15px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 10px;
-    display: block;
-    width: 100%;
-}
-
-button:hover {
-    background-color: #6f2cbb; /* สีม่วงเข้มเมื่อ hover */
-}
-</style>

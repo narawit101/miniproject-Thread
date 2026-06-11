@@ -1,5 +1,6 @@
 <?php
 include_once 'layouts/dataheader.php';
+require_once 'config/swal_helper.php';
 if (!isset($_SESSION['user_id'])) {
     header('Location: index.php?page=login');
     exit();
@@ -45,10 +46,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if ($stmt->execute($params)) {
+        set_swal('success', 'โพสต์สำเร็จ! 🎉', 'กระทู้ของคุณถูกสร้างแล้ว');
         header('Location: index.php?page=all_feed');
         exit();
     } else {
-        echo "เกิดข้อผิดพลาด!";
+        set_swal('error', 'เกิดข้อผิดพลาด!', 'ไม่สามารถสร้างกระทู้ได้ กรุณาลองใหม่');
+        header('Location: index.php?page=create_post');
+        exit();
     }
 }
 ?>
@@ -66,24 +70,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <h1>เขียนกระทู้ของฉัน</h1>
         <div class="boxofpost">
             <!-- HTML Form -->
-            <form id="postForm" method="POST" enctype="multipart/form-data">
-                <input type="text" name="title" placeholder="หัวข้อกระทู้" required>
-                <textarea name="content" placeholder="เนื้อหากระทู้" required></textarea>
-                <input type="file" name="image" accept="image/*" onchange="previewImage(event)">
-                <img id="preview" src="#" alt="ตัวอย่างรูปภาพ"
-                    style="display: none; max-width: 100%; height: a    uto;">
-                <label for="category">เลือกหมวดหมู่:</label>
-                <select name="category_id" required>
-                    <option value="">เลือกหมวดหมู่</option>
-                    <?php foreach ($categories as $category): ?>
-                        <option value="<?= $category['category_id'] ?>">
-                            <?= htmlspecialchars($category['category_name']) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-                <button type="submit">โพสต์กระทู้</button>
-                <button type="button" onclick="deleteImage()">ลบรูปภาพที่อัปโหลดก่อนหน้า</button>
-                <button type="button"><a href="index.php?page=homepage">ย้อนกลับ</a></button>
+            <form id="postForm" method="POST" enctype="multipart/form-data" class="mt-3">
+                <div class="mb-3">
+                    <label for="title" class="form-label font-weight-bold">หัวข้อกระทู้:</label>
+                    <input type="text" id="title" name="title" class="form-control" placeholder="หัวข้อกระทู้" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="content" class="form-label">เนื้อหากระทู้:</label>
+                    <textarea id="content" name="content" class="form-control" rows="5" placeholder="เนื้อหากระทู้" required></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="image" class="form-label">อัปโหลดรูปภาพ (ถ้ามี):</label>
+                    <input type="file" id="image" name="image" class="form-control" accept="image/*" onchange="previewImage(event)">
+                    <div class="mt-2">
+                        <img id="preview" src="#" alt="ตัวอย่างรูปภาพ" class="img-thumbnail" style="display: none; max-width: 100%; height: auto;">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="category_id" class="form-label">เลือกหมวดหมู่:</label>
+                    <select id="category_id" name="category_id" class="form-select" required>
+                        <option value="">เลือกหมวดหมู่</option>
+                        <?php foreach ($categories as $category): ?>
+                            <option value="<?= $category['category_id'] ?>">
+                                <?= htmlspecialchars($category['category_name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary">โพสต์กระทู้</button>
+                    <button type="button" class="btn btn-secondary" onclick="deleteImage()">ลบรูปภาพ</button>
+                    <button type="button" class="btn btn-outline-primary" onclick="window.location.href='index.php?page=homepage'">ย้อนกลับ</button>
+                </div>
             </form>
         </div>
     </div>
@@ -106,27 +128,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     function deleteImage() {
-        if (confirm('คุณแน่ใจหรือว่าต้องการลบรูปภาพที่อัปโหลดก่อนหน้า?')) {
+        Swal.fire({
+            title: 'ลบรูปภาพ?',
+            text: 'คุณแน่ใจหรือว่าต้องการลบรูปภาพที่อัปโหลด?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e53e3e',
+            cancelButtonColor: '#718096',
+            confirmButtonText: 'ลบ',
+            cancelButtonText: 'ยกเลิก',
+        }).then(function(result) {
+            if (!result.isConfirmed) return;
             const formData = new FormData(document.getElementById('postForm'));
             formData.append('delete_image', '1');
-
-            fetch('index.php?page=create_post', {
-                method: 'POST',
-                body: formData
-            })
-                .then(response => response.json())
+            fetch('index.php?page=create_post', { method: 'POST', body: formData })
+                .then(r => r.json())
                 .then(data => {
                     if (data.status === 'success') {
                         document.getElementById('preview').style.display = 'none';
                         document.querySelector('input[name="image"]').value = '';
                     } else {
-                        alert('เกิดข้อผิดพลาดในการลบรูปภาพ');
+                        Swal.fire('เกิดข้อผิดพลาด!', 'ไม่สามารถลบรูปภาพได้', 'error');
                     }
                 })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
+                .catch(() => Swal.fire('เกิดข้อผิดพลาด!', 'ไม่สามารถเชื่อมต่อได้', 'error'));
+        });
     }
 
     function goBack() {

@@ -4,6 +4,22 @@ This document describes the business domain, user roles, relational database sch
 
 ---
 
+## 🐳 Runtime Environment
+
+This project runs entirely inside **Docker** containers. There is no XAMPP/Laragon dependency.
+
+| Service | Container Name | Notes |
+|---|---|---|
+| Nginx | `dpi_nginx` | Serves app on port `8080`, proxies PHP via FastCGI |
+| PHP 8.2-FPM | `dpi_php` | Executes all `.php` files |
+| MySQL 8.0 | `dpi_mysql` | DB host name is `mysql` (not `localhost`) |
+| phpMyAdmin | `dpi_phpmyadmin` | Accessible at port `8081` |
+
+**DB credentials** are loaded from environment variables defined in `.env` (never hardcoded).
+The `config/server.php` uses `getenv()` to read `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS`.
+
+---
+
 ## 👥 User Roles & Permissions
 
 The platform supports two roles with distinct privileges:
@@ -25,7 +41,7 @@ The platform supports two roles with distinct privileges:
   - Inherits all general user capabilities.
   - Access user management console to update user details, toggle roles, or delete users.
   - Manage categories (create new categories, delete inactive categories, update icons).
-  - Publish and manage announcements stored in a local JSON database (displayed on the sidebar announcements widget).
+  - Publish and manage announcements stored in the database (displayed on the sidebar announcements widget).
 
 ---
 
@@ -82,6 +98,13 @@ erDiagram
         int user_id PK_FK
         int post_id PK_FK
     }
+    ANNOUNCEMENTS {
+        int announcement_id PK
+        string title
+        string description
+        string image
+        datetime created_at
+    }
 ```
 
 ### Table Specifications
@@ -128,10 +151,16 @@ erDiagram
 ## ⚡ Technical Logic Specifications
 
 1. **Admin Announcements widget:**
-   To reduce queries on the primary MySQL database, admin system announcements are stored inside a flat JSON file at [config/posts.json](file:///c:/D/thread/miniproject-Thread/config/posts.json). The backend reads this file via PHP's `file_get_contents()` and renders cards inside the sidebar template `layouts/con4.php`.
+   Admin system announcements are stored inside the `announcements` database table. The backend fetches them via PDO queries in `layouts/con4.php` and renders cards inside the sidebar template.
 
 2. **AJAX Likes:**
    Pressing the Like button triggers a POST request to `index.php?page=toggle_like`. The backend toggles the user's like entry in the database and returns a JSON payload containing the updated like count and the toggle action (`like` or `unlike`).
 
 3. **Swiper Integration:**
    `layouts/category_slide.php` implements the Swiper.js layout for slide elements, which are styled using Vanilla CSS in `styles/category_slidestyle.css` and controlled using `assets/js/script.js`.
+
+4. **Database Initialization:**
+   The `db.sql` file at the project root is automatically imported by MySQL container on first run via Docker's `docker-entrypoint-initdb.d/` mechanism. No manual import step is needed.
+
+5. **Environment Variables:**
+   All sensitive configuration (DB credentials) is stored in `.env` and injected into containers by Docker Compose. PHP reads them via `getenv()` in `config/server.php`.

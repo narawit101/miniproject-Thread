@@ -1,0 +1,85 @@
+/* Stylesheet for User Management Table Layout */
+
+h2 {
+    font-size: 1.4rem;
+    color: #123524;
+    margin: 25px 0 12px 0;
+    border-left: 4px solid #3E7B27;
+    padding-left: 10px;
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.user-table th, 
+.user-table td {
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.user-table th {
+    background-color: #123524;
+    color: #F4FFC3;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.user-table td {
+    font-size: 14px;
+    color: #3E7B27;
+    border-bottom: 1px solid rgba(18, 53, 36, 0.08);
+    background-color: #ffffff;
+}
+
+.user-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.user-table tbody tr:hover td {
+    background-color: rgba(244, 255, 195, 0.2);
+}
+
+/* User actions buttons style */
+.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1.5px solid transparent;
+}
+
+.btn-primary {
+    background-color: #123524;
+    color: #F4FFC3;
+    border-color: #123524;
+}
+
+.btn-primary:hover {
+    background-color: #3E7B27;
+    border-color: #3E7B27;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(62, 123, 39, 0.2);
+}
+
+.btn-danger {
+    background-color: transparent;
+    border-color: #e53e3e;
+    color: #e53e3e;
+}
+
+.btn-danger:hover {
+    background-color: #e53e3e;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(229, 62, 62, 0.2);
+}

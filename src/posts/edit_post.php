@@ -1,5 +1,6 @@
 <?php
 include_once 'layouts/dataheader.php'; // รวมการตั้งค่าข้อมูลและเชื่อมต่อฐานข้อมูล
+require_once 'config/swal_helper.php';
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: index.php?page=login');
@@ -86,10 +87,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt = $conn->prepare($sql);
 
     if ($stmt->execute($params)) {
-        header("Location: index.php?page=post&post_id=$post_id"); 
+        set_swal('success', 'แก้ไขสำเร็จ! ✅', 'กระทู้ของคุณถูกอัปเดตแล้ว');
+        header("Location: index.php?page=post&post_id=$post_id");
         exit();
     } else {
-        echo "เกิดข้อผิดพลาด!";
+        set_swal('error', 'เกิดข้อผิดพลาด!', 'ไม่สามารถแก้ไขกระทู้ได้ กรุณาลองใหม่');
+        header("Location: index.php?page=edit_post&post_id=$post_id");
+        exit();
     }
 }
 ?>
@@ -103,43 +107,55 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="boxofpost">
                 <h1>แก้ไขกระทู้</h1>
                 <!-- HTML Form -->
-                <form id="postForm" method="POST" enctype="multipart/form-data">
-                    <input type="text" name="title" value="<?= htmlspecialchars($post['title']) ?>"
-                        placeholder="หัวข้อกระทู้" required>
-                    <textarea name="content" placeholder="เนื้อหากระทู้"
-                        required><?= htmlspecialchars($post['content']) ?></textarea>
+                <form id="postForm" method="POST" enctype="multipart/form-data" class="mt-3">
+                    <div class="mb-3">
+                        <label for="title" class="form-label font-weight-bold">หัวข้อกระทู้:</label>
+                        <input type="text" id="title" name="title" class="form-control" value="<?= htmlspecialchars($post['title']) ?>" placeholder="หัวข้อกระทู้" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="content" class="form-label">เนื้อหากระทู้:</label>
+                        <textarea id="content" name="content" class="form-control" rows="5" placeholder="เนื้อหากระทู้" required><?= htmlspecialchars($post['content']) ?></textarea>
+                    </div>
 
                     <!-- แสดงรูปภาพปัจจุบันและให้ตัวเลือกในการลบ -->
-                    <?php if (!empty($post['post_img'])): ?>
-                        <div>
-                            <img id="preview" src="uploads/<?= htmlspecialchars($post['post_img']) ?>"
-                                alt="รูปภาพที่อัปโหลด" style="max-width: 100%; height: auto;">
-                            <input type="hidden" name="delete_image" id="delete_image" value="0"> <!-- ใช้ hidden field -->
-                            <button type="button" onclick="deleteImage()">ลบรูปภาพนี้</button>
-                        </div>
-                    <?php else: ?>
-                        <img id="preview" src="#" alt="ตัวอย่างรูปภาพ"
-                            style="display: none; max-width: 100%; height: auto;">
-                    <?php endif; ?>
+                    <div class="mb-3">
+                        <?php if (!empty($post['post_img'])): ?>
+                            <div class="mb-2">
+                                <img id="preview" src="uploads/<?= htmlspecialchars($post['post_img']) ?>" alt="รูปภาพที่อัปโหลด" class="img-thumbnail" style="max-width: 100%; height: auto;">
+                                <input type="hidden" name="delete_image" id="delete_image" value="0">
+                                <button type="button" class="btn btn-sm btn-danger mt-2 d-block" onclick="deleteImage()">ลบรูปภาพนี้</button>
+                            </div>
+                        <?php else: ?>
+                            <div class="mb-2">
+                                <img id="preview" src="#" alt="ตัวอย่างรูปภาพ" class="img-thumbnail" style="display: none; max-width: 100%; height: auto;">
+                            </div>
+                        <?php endif; ?>
+                    </div>
 
                     <!-- ช่องเพิ่มรูปภาพใหม่ -->
-                    <label for="image">อัปโหลดรูปใหม่ (ถ้ามี):</label>
-                    <input type="file" name="image" id="image" accept="image/*" onchange="previewImage(event)">
+                    <div class="mb-3">
+                        <label for="image" class="form-label">อัปโหลดรูปใหม่ (ถ้ามี):</label>
+                        <input type="file" name="image" id="image" class="form-control" accept="image/*" onchange="previewImage(event)">
+                    </div>
 
-                    <label for="category">เลือกหมวดหมู่:</label>
-                    <select name="category_id" required>
-                        <option value="">เลือกหมวดหมู่</option>
-                        <?php foreach ($categories as $category): ?>
-                            <option value="<?= $category['category_id'] ?>"
-                                <?= ($category['category_id'] == $post['category_id']) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($category['category_name']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <div class="mb-3">
+                        <label for="category_id" class="form-label">เลือกหมวดหมู่:</label>
+                        <select id="category_id" name="category_id" class="form-select" required>
+                            <option value="">เลือกหมวดหมู่</option>
+                            <?php foreach ($categories as $category): ?>
+                                <option value="<?= $category['category_id'] ?>" <?= ($category['category_id'] == $post['category_id']) ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($category['category_name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
 
-                    <button type="submit">บันทึกการแก้ไข</button>
-                    <button type="button" onclick="history.back()">ย้อนกลับ</button>
-                    </form>
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">บันทึกการแก้ไข</button>
+                        <button type="button" class="btn btn-outline-primary" onclick="history.back()">ย้อนกลับ</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -165,10 +181,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // ฟังก์ชันลบรูปภาพ
     function deleteImage() {
-        if (confirm('คุณแน่ใจหรือว่าต้องการลบรูปภาพนี้?')) {
-            document.getElementById('delete_image').value = '1'; // ตั้งค่า hidden field เพื่อระบุว่าต้องการลบรูป
-            document.getElementById('preview').style.display = 'none'; // ซ่อนรูปภาพในหน้าจอ
-        }
+        Swal.fire({
+            title: 'ลบรูปภาพนี้?',
+            text: 'คุณแน่ใจหรือว่าต้องการลบรูปภาพนี้?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e53e3e',
+            cancelButtonColor: '#718096',
+            confirmButtonText: 'ลบ',
+            cancelButtonText: 'ยกเลิก',
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                document.getElementById('delete_image').value = '1';
+                document.getElementById('preview').style.display = 'none';
+            }
+        });
     }
 
     // ฟังก์ชันย้อนกลับ

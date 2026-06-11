@@ -4,16 +4,43 @@ Welcome, fellow AI agents! This document serves as a guide for development and r
 
 ---
 
+## 🐳 Runtime Environment (Docker)
+
+This project runs inside **Docker** — there is no XAMPP, Laragon, or any local server bundle.
+
+| Container | Role | Key Detail |
+|---|---|---|
+| `dpi_nginx` | Web server | Port `8080` on host |
+| `dpi_php` | PHP 8.2-FPM | Executes all `.php` scripts |
+| `dpi_mysql` | MySQL 8.0 | Hostname is `mysql` inside Docker network |
+| `dpi_phpmyadmin` | DB GUI | Port `8081` on host |
+
+> ⚠️ **Critical:** The database host is `mysql` (Docker service name), **NOT** `localhost`.
+
+### DB Configuration Rule
+- **Never hardcode** database credentials in PHP files.
+- Always read from environment variables using `getenv()`:
+  ```php
+  $host   = getenv('DB_HOST') ?: 'mysql';
+  $dbname = getenv('DB_NAME') ?: 'dpi_db';
+  $user   = getenv('DB_USER') ?: 'dpi_user';
+  $pass   = getenv('DB_PASS') ?: '';
+  ```
+- Credentials are defined in `.env` at the project root and injected by Docker Compose.
+
+---
+
 ## 📁 Workspace Folder Layout
 
 This project utilizes a **Central Router** architecture. All browser traffic is directed to `index.php?page=<page_name>` at the root.
 
 Directories are structured as follows:
 1. **Root (`index.php`):** The single entry point script.
-2. **Configuration (`config/`):** Database connections and JSON databases.
-3. **Common UI (`layouts/`):** Shared templates like headers, footers, sliders, and controllers.
-4. **Static Assets (`assets/`):** Client-side scripts (`assets/js/`) and styles.
-5. **Views (`src/`):** Grouped subdirectories containing PHP views and endpoints:
+2. **Docker (`docker/`):** Container configuration — `docker/nginx/nginx.conf`, `docker/php/Dockerfile`, `docker/php/php.ini`.
+3. **Configuration (`config/`):** Database connections and helper functions (e.g., `swal_helper.php`).
+4. **Common UI (`layouts/`):** Shared templates like headers, footers, sliders, and controllers.
+5. **Static Assets (`assets/`):** Client-side scripts (`assets/js/`) and styles.
+6. **Views (`src/`):** Grouped subdirectories containing PHP views and endpoints:
    - `src/auth/` - Authentication logic.
    - `src/admin/` - Administrator dashboards and user management actions.
    - `src/user/` - Profile management scripts.
@@ -78,4 +105,6 @@ Because the entry point is always `index.php` running at the root directory, fol
 
 ## 📝 Coding Standards
 - **Preserve Existing Logic:** Keep user logic intact (multi-page layouts, database parameters) unless explicitly requested to rewrite database tables.
-- **JSON Handler:** When reading/writing to `config/posts.json`, ensure the file is initialized as an empty array `[]` if missing.
+- **Announcements Table:** System announcements are stored in the MySQL `announcements` database table. Ensure you query the table using PDO prepared statements.
+- **No Hardcoded Credentials:** Always use `getenv()` for DB connection values. Never write raw passwords in PHP files.
+- **Docker Files:** When modifying Docker config (`docker-compose.yml`, `docker/nginx/nginx.conf`, `docker/php/Dockerfile`, `docker/php/php.ini`), verify changes do not break the PHP-FPM ↔ Nginx FastCGI bridge.

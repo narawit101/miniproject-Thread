@@ -46,7 +46,7 @@ $users = $stmt->fetchAll();
                                 <td>
                                     <a href="index.php?page=edit_user&user_id=<?= $user['user_id'] ?>" class="btn btn-primary">แก้ไข</a>
                                     <a href="index.php?page=delete_user&user_id=<?= $user['user_id'] ?>"
-                                        onclick="return confirm('คุณแน่ใจว่าต้องการลบผู้ใช้นี้หรือไม่?')"
+                                        data-confirm="ยืนยันการลบผู้ใช้ '<?= htmlspecialchars($user['first_name']) ?>'?"
                                         class="btn btn-danger">ลบ</a>
                                 </td>
                             </tr>
@@ -76,7 +76,7 @@ $users = $stmt->fetchAll();
                                 <td>
                                     <a href="index.php?page=edit_user&user_id=<?= $user['user_id'] ?>" class="btn btn-primary">แก้ไข</a>
                                     <a href="index.php?page=delete_user&user_id=<?= $user['user_id'] ?>"
-                                        onclick="return confirm('คุณแน่ใจว่าต้องการลบผู้ใช้นี้หรือไม่?')"
+                                        data-confirm="ยืนยันการลบผู้ใช้ '<?= htmlspecialchars($user['first_name']) ?>'?"
                                         class="btn btn-danger">ลบ</a>
                                 </td>
                             </tr>

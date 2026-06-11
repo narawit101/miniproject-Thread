@@ -195,7 +195,7 @@ $posts = $stmt->fetchAll();
                     <a href="index.php?page=edit_post&post_id=<?= $post['post_id'] ?>" class="button-link">แก้ไขโพสต์</a>
                     <!-- ปุ่มลบโพสต์ -->
                     <a href="index.php?page=delete_post&post_id=<?= $post['post_id'] ?>" class="button-link delete"
-                        onclick="return confirm('ยืนยันการลบข้อมูล')">ลบโพสต์</a>
+                        data-confirm="ยืนยันการลบกระทู้นี้?">ลบโพสต์</a>
                 <?php endif; ?>
                 <!-- ปุ่มคอมเมนต์ -->
                 <a href="index.php?page=post&post_id=<?= $post['post_id'] ?>" class="button-link comment">คอมเมนต์</a>

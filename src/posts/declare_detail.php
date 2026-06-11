@@ -1,18 +1,16 @@
 <?php
 include_once 'layouts/dataheader.php';
 
-$file_path = 'posts.json';
-if (!file_exists($file_path)) {
-    die('ไม่พบไฟล์ข้อมูล');
-}
-
-$json_data = file_get_contents($file_path);
-$posts = json_decode($json_data, true);
-
 if (isset($_GET['post'])) {
-    $post_index = $_GET['post'];
-    if (isset($posts[$post_index])) {
-        $post = $posts[$post_index];
+    $post_id = $_GET['post'];
+    if (is_numeric($post_id)) {
+        $stmt = $conn->prepare("SELECT * FROM announcements WHERE announcement_id = ?");
+        $stmt->execute([$post_id]);
+        $post = $stmt->fetch();
+        
+        if (!$post) {
+            die('ไม่พบประกาศ');
+        }
     } else {
         die('ไม่พบประกาศ');
     }
@@ -90,7 +88,7 @@ if (isset($_GET['post'])) {
         <div class="post-description">
             <?php echo nl2br(htmlspecialchars($post['description'])); ?>
         </div>
-        <p><small>Posted on: <?php echo date('F j, Y, g:i a', strtotime($post['time'])); ?></small></p>
+        <p><small>Posted on: <?php echo date('F j, Y, g:i a', strtotime($post['created_at'])); ?></small></p>
         <button onclick="window.location.href = 'index.php?page=homepage'">ย้อนกลับ</button>
     </div>
 </body>

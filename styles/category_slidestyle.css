@@ -1,0 +1,117 @@
+/* styles/category_slidestyle.css */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.layoutofcon2.swiper {
+    padding: 25px !important;
+    position: relative;
+}
+
+.layoutofcon2.swiper h3 {
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #123524;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.slider-wrapper {
+    position: relative;
+    padding: 0 40px;
+    overflow: hidden;
+}
+
+.category-item.swiper-slide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(244, 255, 195, 0.4);
+    border: 1px solid rgba(18, 53, 36, 0.08);
+    border-radius: 12px;
+    padding: 15px;
+    box-sizing: border-box;
+    transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+    text-align: center;
+    height: auto;
+}
+
+.category-item.swiper-slide:hover {
+    transform: translateY(-4px);
+    background-color: rgba(244, 255, 195, 0.75);
+    box-shadow: 0 6px 15px rgba(18, 53, 36, 0.1);
+}
+
+.category-img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    border-radius: 50%;
+    background: #ffffff;
+    padding: 8px;
+    border: 1.5px solid #3E7B27;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.cate-button {
+    width: 100%;
+    background-color: #123524;
+    color: #F4FFC3;
+    font-family: 'Kanit', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cate-button:hover {
+    background-color: #3E7B27;
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(62, 123, 39, 0.2);
+}
+
+/* Swiper navigation buttons */
+.swiper-slide-button {
+    color: #123524 !important;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.swiper-slide-button:hover {
+    color: #3E7B27 !important;
+}
+
+.swiper-button-prev::after,
+.swiper-button-next::after {
+    font-size: 18px !important;
+}
+
+.swiper-button-prev {
+    left: 10px !important;
+}
+
+.swiper-button-next {
+    right: 10px !important;
+}
+
+/* Swiper pagination dots */
+.swiper-pagination-bullet {
+    background: #3E7B27 !important;
+    opacity: 0.4;
+}
+
+.swiper-pagination-bullet-active {
+    background: #123524 !important;
+    opacity: 1 !important;
+}
+
+.swiper-pagination {
+    bottom: 0px !important;
+}

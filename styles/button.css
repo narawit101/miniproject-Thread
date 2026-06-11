@@ -1,0 +1,84 @@
+/* Unified button and action link stylesheets */
+
+.button-link {
+    display: inline-block;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 20px;
+    cursor: pointer;
+    border: 1.5px solid #123524;
+    background-color: #123524;
+    color: #F4FFC3;
+    transition: all 0.3s ease;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.button-link:hover {
+    background-color: #3E7B27;
+    border-color: #3E7B27;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(62, 123, 39, 0.2);
+}
+
+/* Delete actions (Red Alert style) */
+.button-link.delete {
+    background-color: transparent;
+    border-color: #e53e3e;
+    color: #e53e3e;
+}
+
+.button-link.delete:hover {
+    background-color: #e53e3e;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(229, 62, 62, 0.25);
+}
+
+/* Comment and Detail actions (Green Outline style) */
+.button-link.comment {
+    background-color: transparent;
+    border-color: #3E7B27;
+    color: #3E7B27;
+}
+
+.button-link.comment:hover {
+    background-color: #3E7B27;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(62, 123, 39, 0.2);
+}
+
+/* Action button inside forms */
+button.form-btn {
+    padding: 10px 20px;
+    border-radius: 24px;
+    font-family: 'Kanit', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    border: 2px solid #123524;
+    background-color: #123524;
+    color: #F4FFC3;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+button.form-btn:hover {
+    background-color: #3E7B27;
+    border-color: #3E7B27;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(62, 123, 39, 0.2);
+}
+
+button.form-btn.secondary {
+    background-color: transparent;
+    border-color: #3E7B27;
+    color: #3E7B27;
+}
+
+button.form-btn.secondary:hover {
+    background-color: #3E7B27;
+    color: #ffffff;
+}

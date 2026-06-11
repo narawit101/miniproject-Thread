@@ -1,0 +1,278 @@
+/* styles/feedbyadmin.css */
+
+form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #123524;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid #3E7B27;
+    border-radius: 8px;
+    font-size: 15px;
+    color: #123524;
+    font-family: 'Kanit', sans-serif;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    background-color: #ffffff;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+    border-color: #123524;
+    box-shadow: 0 0 8px rgba(18, 53, 36, 0.15);
+}
+
+textarea {
+    height: 150px;
+    resize: vertical;
+}
+
+input[type="file"] {
+    margin: 10px 0;
+    font-family: 'Kanit', sans-serif;
+    color: #3E7B27;
+}
+
+/* Image preview box */
+#imagePreview {
+    max-width: 100%;
+    max-height: 250px;
+    border-radius: 8px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    object-fit: cover;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+#imagePreview[src=""] {
+    display: none;
+}
+
+/* Button Group layout */
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.button-group button {
+    flex: 1;
+    min-width: 120px;
+    padding: 10px 20px;
+    border-radius: 24px;
+    font-family: 'Kanit', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid #123524;
+    background-color: #123524;
+    color: #F4FFC3;
+}
+
+.button-group button:hover {
+    background-color: #3E7B27;
+    border-color: #3E7B27;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(62, 123, 39, 0.2);
+}
+
+/* Secondary & Back actions buttons */
+.button-group button#cancelButton,
+.button-group button[onclick="history.back()"] {
+    background-color: transparent;
+    border-color: #3E7B27;
+    color: #3E7B27;
+}
+
+.button-group button#cancelButton:hover,
+.button-group button[onclick="history.back()"]:hover {
+    background-color: #3E7B27;
+    color: #ffffff;
+}
+
+.button-group button#cancelButton {
+    display: none; /* Controlled by JS preview script */
+}
+
+/* News cards & Announcement Sidebar widget styling */
+.insidecon4 {
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(18, 53, 36, 0.08);
+}
+
+.insidecon4 h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #123524;
+    border-bottom: 2px solid rgba(18, 53, 36, 0.1);
+    padding-bottom: 8px;
+}
+
+.news-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.news-card {
+    border-radius: 12px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(18, 53, 36, 0.06);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+    max-width: 320px;
+}
+
+.news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(18, 53, 36, 0.1);
+}
+
+.news-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+    border-bottom: 1.5px solid rgba(18, 53, 36, 0.08);
+}
+
+.news-content {
+    padding: 15px;
+    background-color: #ffffff;
+}
+
+.news-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.news-title a {
+    text-decoration: none;
+    color: #123524;
+    transition: color 0.3s ease;
+}
+
+.news-title a:hover {
+    color: #3E7B27;
+}
+
+.news-description {
+    font-size: 14px;
+    color: #3E7B27;
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.news-time {
+    font-size: 12px;
+    color: #85A947;
+    margin-bottom: 10px;
+}
+
+.news-content button {
+    padding: 6px 12px;
+    font-family: 'Kanit', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 15px;
+    border: 1.5px solid #123524;
+    background-color: #123524;
+    color: #F4FFC3;
+    margin-right: 5px;
+}
+
+.news-content button:hover {
+    background-color: #3E7B27;
+    border-color: #3E7B27;
+    color: #ffffff;
+}
+
+.news-content button[onclick*="deletePost"] {
+    background-color: transparent;
+    border-color: #e53e3e;
+    color: #e53e3e;
+}
+
+.news-content button[onclick*="deletePost"]:hover {
+    background-color: #e53e3e;
+    color: #ffffff;
+}
+
+/* Placeholder header for announcements without images */
+.news-no-image-header {
+    height: 100px;
+    background: linear-gradient(135deg, #3E7B27, #123524);
+    border-bottom: 1.5px solid rgba(18, 53, 36, 0.08);
+}
+
+.news-no-image-header .material-symbols-outlined {
+    font-size: 36px;
+    color: #F4FFC3 !important;
+    opacity: 0.8;
+}
+
+/* Edit & Delete Specific Announcement Buttons */
+.btn-edit-announce,
+.btn-delete-announce {
+    padding: 6px 16px;
+    font-family: 'Kanit', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 20px;
+    transition: all 0.25s ease;
+    outline: none;
+    display: inline-block;
+}
+
+.btn-edit-announce {
+    background-color: #123524 !important;
+    border: 1.5px solid #123524 !important;
+    color: #F4FFC3 !important;
+}
+
+.btn-edit-announce:hover {
+    background-color: #3E7B27 !important;
+    border-color: #3E7B27 !important;
+    color: #ffffff !important;
+}
+
+.btn-delete-announce {
+    background-color: transparent !important;
+    border: 1.5px solid #e53e3e !important;
+    color: #e53e3e !important;
+}
+
+.btn-delete-announce:hover {
+    background-color: #e53e3e !important;
+    color: #ffffff !important;
+}
+
+

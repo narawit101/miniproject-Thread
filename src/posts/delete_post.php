@@ -1,24 +1,32 @@
 <?php
 require_once 'config/server.php';
+require_once 'config/swal_helper.php';
 session_start();
+
 if (!isset($_SESSION['user_id'])) {
     header('Location: index.php?page=logout');
     exit();
 }
 
-$post_id = $_GET['post_id'];
+$post_id = $_GET['post_id'] ?? null;
+if (!$post_id) {
+    header('Location: index.php?page=homepage');
+    exit();
+}
 
-// ตรวจสอบสิทธิ์ผู้ใช้
-$isAdmin = $_SESSION['role'] === 'admin'; // ตรวจสอบว่าผู้ใช้เป็น admin หรือไม่
+$isAdmin = $_SESSION['role'] === 'admin';
 
-// ลบโพสต์
-$sql = "DELETE FROM posts WHERE post_id = ?";
+$sql  = "DELETE FROM posts WHERE post_id = ?" . ($isAdmin ? "" : " AND user_id = ?");
 $stmt = $conn->prepare($sql);
+$params = $isAdmin ? [$post_id] : [$post_id, $_SESSION['user_id']];
 
-if ($stmt->execute([$post_id])) {
+if ($stmt->execute($params)) {
+    set_swal('success', 'ลบกระทู้สำเร็จ!', 'กระทู้ถูกลบออกจากระบบแล้ว');
     header('Location: index.php?page=all_feed');
     exit();
 } else {
-    echo "เกิดข้อผิดพลาดในการลบโพสต์!";
+    set_swal('error', 'เกิดข้อผิดพลาด!', 'ไม่สามารถลบกระทู้ได้ กรุณาลองใหม่');
+    header('Location: index.php?page=all_feed');
+    exit();
 }
 ?>
