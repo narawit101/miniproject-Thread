@@ -323,7 +323,7 @@ include_once 'layouts/top_layouts.php';
                             <!-- ── ข้อมูลและฟอร์มแก้ไข ──── -->
                             <div class="cat-info">
                                 <div class="cat-name-display"><?= htmlspecialchars($cat['category_name']) ?></div>
-                                <div class="text-muted small mb-2">
+                                <div class="text-muted small mb-2" style="word-break:break-all; overflow-wrap:break-word; max-width:100%;">
                                     เก็บที่: <code><?= htmlspecialchars($cat['categorie_icon'] ?: '(ยังไม่มีรูป)') ?></code>
                                 </div>
 
