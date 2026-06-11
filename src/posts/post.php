@@ -96,8 +96,8 @@ include_once 'layouts/top_layouts.php';
 
             <!-- สิ้นสุดรูปกับโพส -->
             <?php if (!empty($post['post_img']) && file_exists('uploads/' . $post['post_img'])): ?>
-                <img src="uploads/<?= htmlspecialchars($post['post_img']) ?>" alt="Post Image"
-                    style="max-width: 80%; height: auto; margin-top: 5px; border-radius: 30px; display: block; margin-left: auto; margin-right: auto;">
+            <img src="uploads/<?= htmlspecialchars($post['post_img']) ?>" alt="Post Image"
+                style="max-width: 80%; height: auto; margin-top: 5px; border-radius: 30px; display: block; margin-left: auto; margin-right: auto;">
             <?php endif; ?>
             <!-- ฟอร์มสำหรับตอบคอมเมนต์ -->
             <form method="POST" action="" class="comment-form" enctype="multipart/form-data">
@@ -129,102 +129,102 @@ include_once 'layouts/top_layouts.php';
 
             <h3 style="margin-top: 10px; margin-bottom: 10px;">คอมเมนต์ทั้งหมด</h3>
             <?php if (count($comments) > 0): ?>
-                <ul class="comment-list" style="list-style: none; padding: 0;">
-                    <?php foreach ($comments as $comment): ?>
-                        <li class="comment-item"
-                            style="background-color: #fff; margin-bottom: 20px; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);">
-                            <div class="comment-header" style="display: flex; align-items: center; margin-bottom: 10px;">
-                                <!-- แสดงรูปโปรไฟล์ของผู้ที่คอมเมนต์ -->
-                                <?php
+            <ul class="comment-list" style="list-style: none; padding: 0;">
+                <?php foreach ($comments as $comment): ?>
+                <li class="comment-item"
+                    style="background-color: #fff; margin-bottom: 20px; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);">
+                    <div class="comment-header" style="display: flex; align-items: center; margin-bottom: 10px;">
+                        <!-- แสดงรูปโปรไฟล์ของผู้ที่คอมเมนต์ -->
+                        <?php
                                 if (!empty($comment['user_img']) && file_exists('uploads/' . $comment['user_img'])):
                                     $comment_user_img_path = 'uploads/' . htmlspecialchars($comment['user_img']);
                                 else:
                                     $comment_user_img_path = 'images/de_icon.png';
                                 endif;
                                 ?>
-                                <img src="<?= $comment_user_img_path ?>" alt="User Image"
-                                    style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%; margin-right: 15px; border: 2px solid #eee;">
-                                <div>
-                                    <strong
-                                        style="font-size: 1.1em; color: #333;"><?= htmlspecialchars($comment['first_name']) . ' ' . htmlspecialchars($comment['last_name']) ?></strong>
-                                    <p class="comment-date" style="font-size: 0.9em; color: #aaa; margin: 5px 0 0;">
-                                        <?= date('d M Y, H:i', strtotime($comment['created_at'])) ?>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="comment-body" style="margin-left: 55px;">
-                                <!-- รูปภาพในคอมเมนต์ -->
-                                <?php if (!empty($comment['image'])): ?>
-                                    <img src="uploads/<?= htmlspecialchars($comment['image']) ?>" alt="Comment Image"
-                                        style="max-width: 80%; height: auto; margin-top: 10px; border-radius: 10px;">
-                                <?php endif; ?>
+                        <img src="<?= $comment_user_img_path ?>" alt="User Image"
+                            style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%; margin-right: 15px; border: 2px solid #eee;">
+                        <div>
+                            <strong
+                                style="font-size: 1.1em; color: #333;"><?= htmlspecialchars($comment['first_name']) . ' ' . htmlspecialchars($comment['last_name']) ?></strong>
+                            <p class="comment-date" style="font-size: 0.9em; color: #aaa; margin: 5px 0 0;">
+                                <?= date('d M Y, H:i', strtotime($comment['created_at'])) ?>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="comment-body" style="margin-left: 55px;">
+                        <!-- รูปภาพในคอมเมนต์ -->
+                        <?php if (!empty($comment['image'])): ?>
+                        <img src="uploads/<?= htmlspecialchars($comment['image']) ?>" alt="Comment Image"
+                            style="max-width: 80%; height: auto; margin-top: 10px; border-radius: 10px;">
+                        <?php endif; ?>
 
-                                <!-- เนื้อหาคอมเมนต์ -->
-                                <div class="comment-content" style="margin-top: 10px;">
-                                    <p style="font-size: 1.1em; line-height: 1.4; color: #444;">
-                                        <?= nl2br(htmlspecialchars($comment['content'])) ?>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="comment-footer" style="display: flex; justify-content: flex-end; margin-top: 10px;">
-                                <?php if (isset($_SESSION['user_id'])): ?>
-                                    <?php if ($_SESSION['user_id'] == $comment['user_id'] || $_SESSION['role'] == 'admin'): ?>
-                                        <div class="comment-actions" style="font-size: 0.9em;">
-                                            <a href="index.php?page=edit_comment&comment_id=<?= $comment['comment_id'] ?>&post_id=<?= $post_id ?>"
-                                                style="color: #007bff; text-decoration: none; margin-right: 10px;">แก้ไข</a>
-                                            <a href="index.php?page=delete_comment&comment_id=<?= $comment['comment_id'] ?>&post_id=<?= $post_id ?>"
-                                                style="color: #dc3545; text-decoration: none;"
-                                                data-confirm="ยืนยันการลบความคิดเห็นนี้?">ลบ</a>
-                                        </div>
-                                    <?php endif; ?>
-                                <?php endif; ?>
-                            </div>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
+                        <!-- เนื้อหาคอมเมนต์ -->
+                        <div class="comment-content" style="margin-top: 10px;">
+                            <p style="font-size: 1.1em; line-height: 1.4; color: #444;">
+                                <?= nl2br(htmlspecialchars($comment['content'])) ?>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="comment-footer" style="display: flex; justify-content: flex-end; margin-top: 10px;">
+                        <?php if (isset($_SESSION['user_id'])): ?>
+                        <?php if ($_SESSION['user_id'] == $comment['user_id'] || $_SESSION['role'] == 'admin'): ?>
+                        <div class="comment-actions" style="font-size: 0.9em;">
+                            <a href="index.php?page=edit_comment&comment_id=<?= $comment['comment_id'] ?>&post_id=<?= $post_id ?>"
+                                style="color: #007bff; text-decoration: none; margin-right: 10px;">แก้ไข</a>
+                            <a href="index.php?page=delete_comment&comment_id=<?= $comment['comment_id'] ?>&post_id=<?= $post_id ?>"
+                                style="color: #dc3545; text-decoration: none;"
+                                data-confirm="ยืนยันการลบความคิดเห็นนี้?">ลบ</a>
+                        </div>
+                        <?php endif; ?>
+                        <?php endif; ?>
+                    </div>
+                </li>
+                <?php endforeach; ?>
+            </ul>
             <?php else: ?>
-                <p style="color: #777; font-style: italic;">ยังไม่มีคอมเมนต์</p> <!-- ถ้าไม่มีคอมเมนต์ให้แสดงข้อความนี้ -->
+            <p style="color: #777; font-style: italic;">ยังไม่มีคอมเมนต์</p> <!-- ถ้าไม่มีคอมเมนต์ให้แสดงข้อความนี้ -->
             <?php endif; ?>
         </div>
 
 
     </div>
-    <div class="item layoutofcon4"></div>
+    <!-- <div class="item layoutofcon4"></div> -->
     <?php include_once 'layouts/bottom_layouts.php'; ?>
     <script>
-        // ฟังก์ชันล้างข้อมูลรูปภาพ
-        function clearImage() {
-            const imageInput = document.getElementById('image');
-            const imagePreviewContainer = document.getElementById('image-preview-container');
-            const imagePreview = document.getElementById('image-preview');
+    // ฟังก์ชันล้างข้อมูลรูปภาพ
+    function clearImage() {
+        const imageInput = document.getElementById('image');
+        const imagePreviewContainer = document.getElementById('image-preview-container');
+        const imagePreview = document.getElementById('image-preview');
 
-            imageInput.value = ''; // ล้างข้อมูลใน input
-            imagePreview.src = '#'; // ล้างข้อมูลพรีวิวรูปภาพ
-            imagePreviewContainer.style.display = 'none'; // ซ่อน container ของพรีวิวรูปภาพ
-        }
+        imageInput.value = ''; // ล้างข้อมูลใน input
+        imagePreview.src = '#'; // ล้างข้อมูลพรีวิวรูปภาพ
+        imagePreviewContainer.style.display = 'none'; // ซ่อน container ของพรีวิวรูปภาพ
+    }
 
-        // ฟังก์ชันแสดงพรีวิวรูปภาพ
-        function previewImage(event) {
-            const imagePreviewContainer = document.getElementById('image-preview-container');
-            const imagePreview = document.getElementById('image-preview');
-            const file = event.target.files[0];
+    // ฟังก์ชันแสดงพรีวิวรูปภาพ
+    function previewImage(event) {
+        const imagePreviewContainer = document.getElementById('image-preview-container');
+        const imagePreview = document.getElementById('image-preview');
+        const file = event.target.files[0];
 
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    imagePreview.src = e.target.result; // ตั้งค่า src ของพรีวิวรูปภาพ
-                    imagePreviewContainer.style.display = 'block'; // แสดง container ของพรีวิวรูปภาพ
-                }
-                reader.readAsDataURL(file);
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result; // ตั้งค่า src ของพรีวิวรูปภาพ
+                imagePreviewContainer.style.display = 'block'; // แสดง container ของพรีวิวรูปภาพ
             }
+            reader.readAsDataURL(file);
         }
+    }
 
-        function customBack() {
-            const previousURL = "<?php echo $_SESSION['previous_page']; ?>";
-            if (previousURL.includes('edit_comment')) {
-                window.location.href = 'index.php?page=all_feed'; // เปลี่ยนเส้นทางไปยัง all_feed.php
-            } else {
-                window.location.href = previousURL; // ย้อนกลับไปหน้าก่อนหน้า
-            }
+    function customBack() {
+        const previousURL = "<?php echo $_SESSION['previous_page']; ?>";
+        if (previousURL.includes('edit_comment')) {
+            window.location.href = 'index.php?page=all_feed'; // เปลี่ยนเส้นทางไปยัง all_feed.php
+        } else {
+            window.location.href = previousURL; // ย้อนกลับไปหน้าก่อนหน้า
         }
+    }
     </script>

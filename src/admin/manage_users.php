@@ -20,8 +20,13 @@ $users = $stmt->fetchAll();
 
 <?php include_once 'layouts/top_layouts.php';?>
 
+<link rel="stylesheet" href="styles/manage_userstyle.css">
+<div class="bodyofcontent">
 
-    <link rel="stylesheet" href="styles/manage_userstyle.css">
+    <div class="item layoutofcon1">
+        <?php include_once 'layouts/category_slide.php'; ?>
+    </div>
+
     <div class="item layoutofcon3">
         <h1>จัดการผู้ใช้</h1>
         <div class="insidecon3">
@@ -44,10 +49,10 @@ $users = $stmt->fetchAll();
                                 <td><?= htmlspecialchars($user['email']) ?></td>
                                 <td><?= htmlspecialchars($user['role']) ?></td>
                                 <td>
-                                    <a href="index.php?page=edit_user&user_id=<?= $user['user_id'] ?>" class="btn btn-primary">แก้ไข</a>
+                                    <a href="index.php?page=edit_user&user_id=<?= $user['user_id'] ?>" class="btn btn-primary btn-sm">แก้ไข</a>
                                     <a href="index.php?page=delete_user&user_id=<?= $user['user_id'] ?>"
                                         data-confirm="ยืนยันการลบผู้ใช้ '<?= htmlspecialchars($user['first_name']) ?>'?"
-                                        class="btn btn-danger">ลบ</a>
+                                        class="btn btn-danger btn-sm">ลบ</a>
                                 </td>
                             </tr>
                         <?php endif; ?>
@@ -74,10 +79,10 @@ $users = $stmt->fetchAll();
                                 <td><?= htmlspecialchars($user['email']) ?></td>
                                 <td><?= htmlspecialchars($user['role']) ?></td>
                                 <td>
-                                    <a href="index.php?page=edit_user&user_id=<?= $user['user_id'] ?>" class="btn btn-primary">แก้ไข</a>
+                                    <a href="index.php?page=edit_user&user_id=<?= $user['user_id'] ?>" class="btn btn-primary btn-sm">แก้ไข</a>
                                     <a href="index.php?page=delete_user&user_id=<?= $user['user_id'] ?>"
                                         data-confirm="ยืนยันการลบผู้ใช้ '<?= htmlspecialchars($user['first_name']) ?>'?"
-                                        class="btn btn-danger">ลบ</a>
+                                        class="btn btn-danger btn-sm">ลบ</a>
                                 </td>
                             </tr>
                         <?php endif; ?>
@@ -86,7 +91,11 @@ $users = $stmt->fetchAll();
             </table>
         </div>
     </div>
-   
 
+    <div class="item layoutofcon4">
+        <?php include_once 'layouts/con4.php'; ?>
+    </div>
+
+</div>
 
 <?php include_once 'layouts/bottom_layouts.php';?>

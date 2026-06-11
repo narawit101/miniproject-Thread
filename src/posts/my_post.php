@@ -80,9 +80,9 @@ $posts = $stmt->fetchAll();
                     <form method="POST" class="like-form" data-post-id="<?= $post_id ?>">
                         <input type="hidden" name="post_id" value="<?= $post_id ?>">
                         <?php if ($like): ?>
-                            <button type="submit" name="action" value="unlike">ยกเลิกไลค์</button>
+                            <button type="submit" name="action" value="unlike" class="btn-like liked">♥ ยกเลิกไลค์</button>
                         <?php else: ?>
-                            <button type="submit" name="action" value="like">ไลค์</button>
+                            <button type="submit" name="action" value="like" class="btn-like">♡ ไลค์</button>
                         <?php endif; ?>
                     </form>
                     <!-- แสดงจำนวนไลค์ -->

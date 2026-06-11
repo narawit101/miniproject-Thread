@@ -120,11 +120,15 @@ if (session_status() !== PHP_SESSION_NONE && isset($_SESSION['swal'])) {
                 .then(function (r) { return r.json(); })
                 .then(function (data) {
                     if (data.action === 'unlike') {
-                        btn.textContent = 'ยกเลิกไลค์';
+                        // ผู้ใช้เพิ่งกดไลค์ → แสดงสถานะ "ไลค์แล้ว"
+                        btn.innerHTML = '♥ ยกเลิกไลค์';
                         btn.value = 'unlike';
+                        btn.classList.add('liked');
                     } else {
-                        btn.textContent = 'ไลค์';
+                        // ผู้ใช้เพิ่งยกเลิกไลค์ → แสดงสถานะ "ยังไม่ได้ไลค์"
+                        btn.innerHTML = '♡ ไลค์';
                         btn.value = 'like';
+                        btn.classList.remove('liked');
                     }
                     const countEl = form.nextElementSibling;
                     if (countEl) countEl.textContent = 'จำนวนไลค์: ' + data.like_count;

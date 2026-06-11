@@ -57,6 +57,19 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
+.category-img-placeholder {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(244, 255, 195, 0.6);
+    border: 1.5px dashed #85A947;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
 .cate-button {
     width: 100%;
     background-color: #123524;

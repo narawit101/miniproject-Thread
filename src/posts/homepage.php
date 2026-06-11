@@ -113,14 +113,12 @@ $popular_posts = $stmt_popular->fetchAll();
                     <input type="hidden" name="post_id" value="<?= $post_id ?>">
 
                     <?php if ($like): ?>
-                        <!-- ถ้าผู้ใช้กดไลค์แล้ว จะแสดงปุ่มยกเลิกไลค์พร้อมไอคอน -->
-                        <button type="submit" name="action" value="unlike">
-                            <i class="fas fa-thumbs-down"></i> ยกเลิกไลค์
+                        <button type="submit" name="action" value="unlike" class="btn-like liked">
+                            ♥ ยกเลิกไลค์
                         </button>
                     <?php else: ?>
-                        <!-- ถ้าผู้ใช้ยังไม่กดไลค์ จะแสดงปุ่มไลค์พร้อมไอคอน -->
-                        <button type="submit" name="action" value="like">
-                            <i class="fas fa-thumbs-up"></i> ไลค์
+                        <button type="submit" name="action" value="like" class="btn-like">
+                            ♡ ไลค์
                         </button>
                     <?php endif; ?>
                 </form>
@@ -216,62 +214,22 @@ $popular_posts = $stmt_popular->fetchAll();
 </div>
 
 <script>
-    let subMenu = document.getElementById("subMenu");
-
-    function toggleMenu() {
-        subMenu.classList.toggle("open-menu");
-    }
-
-    document.querySelectorAll('.like-form').forEach(form => {
-        form.addEventListener('submit', function(event) {
-            event.preventDefault();
-            const postId = this.dataset.postId;
-            const action = this.querySelector('button').value;
-
-            fetch('index.php?page=toggle_like', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: new URLSearchParams({
-                        post_id: postId,
-                        action: action
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.action === 'unlike') {
-                        this.querySelector('button').textContent = 'ยกเลิกไลค์';
-                        this.querySelector('button').value = 'unlike';
-                    } else {
-                        this.querySelector('button').textContent = 'ไลค์';
-                        this.querySelector('button').value = 'like';
-                    }
-                    this.nextElementSibling.textContent = 'จำนวนไลค์: ' + data.like_count;
-                });
-        });
-    });
-    // ใช้ document.querySelectorAll เพื่อให้รองรับหลายโพสต์
-    let toggleButtons = document.querySelectorAll('.toggle-comments-btn');
-
-    toggleButtons.forEach(function(button) {
-        button.addEventListener('click', function() {
-            let postId = this.getAttribute('data-post-id'); // ดึง post_id จาก data attribute
-            let commentList = document.querySelector(`.comment-list[data-post-id='${postId}']`);
-
-            // เช็คการแสดงผลของคอมเมนต์
-            if (commentList.style.display === 'none' || commentList.style.display === '') {
-                commentList.style.display = 'block'; // แสดงคอมเมนต์
-                this.textContent = 'ซ่อนคอมเมนต์'; // เปลี่ยนข้อความปุ่ม
-            } else {
-                commentList.style.display = 'none'; // ซ่อนคอมเมนต์
-                this.textContent = `ดูคอมเมนต์ (${commentList.childElementCount})`; // เปลี่ยนข้อความปุ่มกลับไปพร้อมแสดงจำนวนคอมเมนต์
-            }
+    // Toggle comments
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.toggle-comments-btn').forEach(function (button) {
+            button.addEventListener('click', function () {
+                let postId = this.getAttribute('data-post-id');
+                let commentList = document.querySelector(`.comment-list[data-post-id='${postId}']`);
+                if (commentList.style.display === 'none' || commentList.style.display === '') {
+                    commentList.style.display = 'block';
+                    this.textContent = 'ซ่อนคอมเมนต์';
+                } else {
+                    commentList.style.display = 'none';
+                    this.textContent = `ดูคอมเมนต์ (${commentList.childElementCount})`;
+                }
+            });
         });
     });
 </script>
-</body>
 
-</html>
-
-</html>
+<?php include_once 'layouts/bottom_layouts.php'; ?>

@@ -19,26 +19,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user_id = $_SESSION['user_id'];
 
     // จัดการการอัปโหลดรูปภาพ
-    $post_img = $_FILES['image']['name'];
-    $target = "uploads/" . basename($post_img);
-
-    // ลบรูปภาพเก่าถ้ามี
-    if (isset($_POST['delete_image']) && $_POST['delete_image'] == '1') {
-        $old_img_query = "SELECT post_img FROM posts WHERE user_id = ? ORDER BY created_at DESC LIMIT 1";
-        $old_img_stmt = $conn->prepare($old_img_query);
-        $old_img_stmt->execute([$user_id]);
-        $old_img = $old_img_stmt->fetchColumn();
-
-        if ($old_img && file_exists("uploads/" . $old_img)) {
-            unlink("uploads/" . $old_img);
+    $post_img_name = null;
+    if (!empty($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+        $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+        $post_img_name = 'post_' . uniqid() . '.' . $ext;
+        $target = 'uploads/posts/' . $post_img_name;
+        if (!move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
+            $post_img_name = null; // อัปโหลดล้มเหลว
         }
-        echo json_encode(['status' => 'success']);
-        exit();
     }
-    if (!empty($post_img) && move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
+
+    if ($post_img_name) {
         $sql = "INSERT INTO posts (title, content, user_id, post_img, category_id) VALUES (?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $params = [$title, $content, $user_id, $post_img, $category_id];
+        $params = [$title, $content, $user_id, $post_img_name, $category_id];
     } else {
         $sql = "INSERT INTO posts (title, content, user_id, category_id) VALUES (?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);

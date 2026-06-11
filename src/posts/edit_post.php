@@ -49,24 +49,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user_id = $_SESSION['user_id'];
 
     // จัดการการอัปโหลดรูปภาพใหม่
-    $post_img = $_FILES['image']['name'];
-    $target = "uploads/" . basename($post_img);
-
     // ลบรูปภาพเก่าถ้ามีการลบ
     if (isset($_POST['delete_image']) && $_POST['delete_image'] == '1') {
-        if ($post['post_img'] && file_exists("uploads/" . $post['post_img'])) {
-            unlink("uploads/" . $post['post_img']);
+        if ($post['post_img'] && file_exists('uploads/posts/' . $post['post_img'])) {
+            unlink('uploads/posts/' . $post['post_img']);
         }
-        $post['post_img'] = null; // อัปเดตข้อมูลในตัวแปร $post
+        $post['post_img'] = null;
     }
 
     // ตรวจสอบว่ามีการอัปโหลดรูปภาพใหม่
-    if (!empty($post_img) && move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
-        // ลบรูปภาพเก่าถ้ามีการอัปโหลดรูปใหม่
-        if ($post['post_img'] && file_exists("uploads/" . $post['post_img'])) {
-            unlink("uploads/" . $post['post_img']);
+    if (!empty($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+        $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+        $new_img_name = 'post_' . uniqid() . '.' . $ext;
+        $target = 'uploads/posts/' . $new_img_name;
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
+            // ลบรูปภาพเก่าถ้ามีการอัปโหลดรูปใหม่
+            if ($post['post_img'] && file_exists('uploads/posts/' . $post['post_img'])) {
+                unlink('uploads/posts/' . $post['post_img']);
+            }
+            $post['post_img'] = $new_img_name;
         }
-        $post['post_img'] = $post_img;
     }
 
     // อัปเดตข้อมูลโพสต์ในฐานข้อมูล
@@ -110,33 +112,39 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <form id="postForm" method="POST" enctype="multipart/form-data" class="mt-3">
                     <div class="mb-3">
                         <label for="title" class="form-label font-weight-bold">หัวข้อกระทู้:</label>
-                        <input type="text" id="title" name="title" class="form-control" value="<?= htmlspecialchars($post['title']) ?>" placeholder="หัวข้อกระทู้" required>
+                        <input type="text" id="title" name="title" class="form-control"
+                            value="<?= htmlspecialchars($post['title']) ?>" placeholder="หัวข้อกระทู้" required>
                     </div>
 
                     <div class="mb-3">
                         <label for="content" class="form-label">เนื้อหากระทู้:</label>
-                        <textarea id="content" name="content" class="form-control" rows="5" placeholder="เนื้อหากระทู้" required><?= htmlspecialchars($post['content']) ?></textarea>
+                        <textarea id="content" name="content" class="form-control" rows="5" placeholder="เนื้อหากระทู้"
+                            required><?= htmlspecialchars($post['content']) ?></textarea>
                     </div>
 
                     <!-- แสดงรูปภาพปัจจุบันและให้ตัวเลือกในการลบ -->
                     <div class="mb-3">
                         <?php if (!empty($post['post_img'])): ?>
-                            <div class="mb-2">
-                                <img id="preview" src="uploads/<?= htmlspecialchars($post['post_img']) ?>" alt="รูปภาพที่อัปโหลด" class="img-thumbnail" style="max-width: 100%; height: auto;">
-                                <input type="hidden" name="delete_image" id="delete_image" value="0">
-                                <button type="button" class="btn btn-sm btn-danger mt-2 d-block" onclick="deleteImage()">ลบรูปภาพนี้</button>
-                            </div>
+                        <div class="mb-2">
+                            <img id="preview" src="uploads/posts/<?= htmlspecialchars($post['post_img']) ?>"
+                                alt="รูปภาพที่อัปโหลด" class="img-thumbnail" style="max-width: 100%; height: auto;">
+                            <input type="hidden" name="delete_image" id="delete_image" value="0">
+                            <button type="button" class="btn btn-sm btn-danger mt-2 d-block"
+                                onclick="deleteImage()">ลบรูปภาพนี้</button>
+                        </div>
                         <?php else: ?>
-                            <div class="mb-2">
-                                <img id="preview" src="#" alt="ตัวอย่างรูปภาพ" class="img-thumbnail" style="display: none; max-width: 100%; height: auto;">
-                            </div>
+                        <div class="mb-2">
+                            <img id="preview" src="#" alt="ตัวอย่างรูปภาพ" class="img-thumbnail"
+                                style="display: none; max-width: 100%; height: auto;">
+                        </div>
                         <?php endif; ?>
                     </div>
 
                     <!-- ช่องเพิ่มรูปภาพใหม่ -->
                     <div class="mb-3">
                         <label for="image" class="form-label">อัปโหลดรูปใหม่ (ถ้ามี):</label>
-                        <input type="file" name="image" id="image" class="form-control" accept="image/*" onchange="previewImage(event)">
+                        <input type="file" name="image" id="image" class="form-control" accept="image/*"
+                            onchange="previewImage(event)">
                     </div>
 
                     <div class="mb-3">
@@ -144,9 +152,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <select id="category_id" name="category_id" class="form-select" required>
                             <option value="">เลือกหมวดหมู่</option>
                             <?php foreach ($categories as $category): ?>
-                                <option value="<?= $category['category_id'] ?>" <?= ($category['category_id'] == $post['category_id']) ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($category['category_name']) ?>
-                                </option>
+                            <option value="<?= $category['category_id'] ?>"
+                                <?= ($category['category_id'] == $post['category_id']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($category['category_name']) ?>
+                            </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -159,47 +168,43 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
         </div>
     </div>
-
-    <div class="item layoutofcon4">ยังไม่รู้จะใส่อะไร</div>
-
-    <div class="item layoutofcon5">footer</div>
 </div>
 
 <?php include_once 'layouts/bottom_layouts.php'; ?>
 
 <script>
-    // ฟังก์ชันพรีวิวรูปภาพ
-    function previewImage(event) {
-        const reader = new FileReader();
-        reader.onload = function () {
-            const output = document.getElementById('preview');
-            output.src = reader.result;
-            output.style.display = 'block';
+// ฟังก์ชันพรีวิวรูปภาพ
+function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function() {
+        const output = document.getElementById('preview');
+        output.src = reader.result;
+        output.style.display = 'block';
+    }
+    reader.readAsDataURL(event.target.files[0]);
+}
+
+// ฟังก์ชันลบรูปภาพ
+function deleteImage() {
+    Swal.fire({
+        title: 'ลบรูปภาพนี้?',
+        text: 'คุณแน่ใจหรือว่าต้องการลบรูปภาพนี้?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e53e3e',
+        cancelButtonColor: '#718096',
+        confirmButtonText: 'ลบ',
+        cancelButtonText: 'ยกเลิก',
+    }).then(function(result) {
+        if (result.isConfirmed) {
+            document.getElementById('delete_image').value = '1';
+            document.getElementById('preview').style.display = 'none';
         }
-        reader.readAsDataURL(event.target.files[0]);
-    }
+    });
+}
 
-    // ฟังก์ชันลบรูปภาพ
-    function deleteImage() {
-        Swal.fire({
-            title: 'ลบรูปภาพนี้?',
-            text: 'คุณแน่ใจหรือว่าต้องการลบรูปภาพนี้?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#e53e3e',
-            cancelButtonColor: '#718096',
-            confirmButtonText: 'ลบ',
-            cancelButtonText: 'ยกเลิก',
-        }).then(function(result) {
-            if (result.isConfirmed) {
-                document.getElementById('delete_image').value = '1';
-                document.getElementById('preview').style.display = 'none';
-            }
-        });
-    }
-
-    // ฟังก์ชันย้อนกลับ
-    function goBack() {
-        window.history.back();
-    }
+// ฟังก์ชันย้อนกลับ
+function goBack() {
+    window.history.back();
+}
 </script>

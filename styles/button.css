@@ -82,3 +82,50 @@ button.form-btn.secondary:hover {
     background-color: #3E7B27;
     color: #ffffff;
 }
+
+/* ── Like / Unlike button ─────────────────────── */
+.btn-like {
+    display: inline-flex;
+    width: 100px;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Kanit', sans-serif;
+    border-radius: 20px;
+    border: 1.5px solid #3E7B27;
+    background-color: transparent;
+    color: #3E7B27;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    /* width: auto; */
+}
+
+.btn-like:hover {
+    background-color: #3E7B27;
+    color: #ffffff;
+    box-shadow: 0 3px 10px rgba(62, 123, 39, 0.25);
+}
+
+.btn-like.liked {
+    background-color: #123524;
+    border-color: #123524;
+    color: #F4FFC3;
+}
+
+.btn-like.liked:hover {
+    background-color: #e53e3e;
+    border-color: #e53e3e;
+    color: #ffffff;
+}
+
+/* ── Like count ───────────────────────────────── */
+.like-count {
+    display: inline-block;
+    font-size: 13px;
+    color: #555;
+    margin: 4px 0 8px 2px;
+}
