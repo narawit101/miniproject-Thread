@@ -18,12 +18,12 @@ $stmt->execute();
 $users = $stmt->fetchAll();
 ?>
 
-<?php include_once 'layouts/top_layouts.php';?>
+<?php include_once 'layouts/top_layouts.php'; ?>
 
 <div class="single-card-layout wide">
     <h1>จัดการผู้ใช้</h1>
-    
-    <h2>ผู้ใช้ Admin</h2>
+
+    <h2>Admin</h2>
     <table class="user-table">
         <thead>
             <tr>
@@ -42,7 +42,8 @@ $users = $stmt->fetchAll();
                         <td><?= htmlspecialchars($user['email']) ?></td>
                         <td><?= htmlspecialchars($user['role']) ?></td>
                         <td>
-                            <a href="index.php?page=edit_user&user_id=<?= $user['user_id'] ?>" class="btn btn-outline-primary btn-sm">แก้ไข</a>
+                            <a href="index.php?page=edit_user&user_id=<?= $user['user_id'] ?>"
+                                class="btn btn-outline-primary btn-sm">แก้ไข</a>
                             <a href="index.php?page=delete_user&user_id=<?= $user['user_id'] ?>"
                                 data-confirm="ยืนยันการลบผู้ใช้ '<?= htmlspecialchars($user['first_name']) ?>'?"
                                 class="btn btn-outline-danger btn-sm">ลบ</a>
@@ -72,7 +73,8 @@ $users = $stmt->fetchAll();
                         <td><?= htmlspecialchars($user['email']) ?></td>
                         <td><?= htmlspecialchars($user['role']) ?></td>
                         <td>
-                            <a href="index.php?page=edit_user&user_id=<?= $user['user_id'] ?>" class="btn btn-outline-primary btn-sm">แก้ไข</a>
+                            <a href="index.php?page=edit_user&user_id=<?= $user['user_id'] ?>"
+                                class="btn btn-outline-primary btn-sm">แก้ไข</a>
                             <a href="index.php?page=delete_user&user_id=<?= $user['user_id'] ?>"
                                 data-confirm="ยืนยันการลบผู้ใช้ '<?= htmlspecialchars($user['first_name']) ?>'?"
                                 class="btn btn-outline-danger btn-sm">ลบ</a>
@@ -84,4 +86,4 @@ $users = $stmt->fetchAll();
     </table>
 </div>
 
-<?php include_once 'layouts/bottom_layouts.php';?>
+<?php include_once 'layouts/bottom_layouts.php'; ?>

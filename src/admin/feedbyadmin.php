@@ -63,19 +63,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <?php include_once 'layouts/top_layouts.php'; ?>
 
 <div class="single-card-layout">
-    <h1>เขียนประกาศ</h1>
+    <h1>เขียนประกาศจากระบบ</h1>
     <div class="boxofpost" style="max-width: 600px; margin: 25px auto 0 auto;">
-        <h2><?= isset($post_to_edit) ? 'แก้ไขประกาศ' : 'โพสต์ประกาศใหม่' ?></h2>
+        <h2><?= isset($post_to_edit) ? 'แก้ไขประกาศจากระบบ' : 'โพสต์ประกาศจากระบบใหม่' ?></h2>
 
         <form method="POST" action="" enctype="multipart/form-data" class="mt-3">
-            <input type="hidden" name="edit_index"
-                value="<?= isset($edit_id) ? htmlspecialchars($edit_id) : '' ?>">
+            <input type="hidden" name="edit_index" value="<?= isset($edit_id) ? htmlspecialchars($edit_id) : '' ?>">
 
             <div class="mb-3">
                 <label for="title" class="form-label font-weight-bold">หัวข้อ:</label>
                 <input type="text" id="title" name="title" class="form-control"
-                    value="<?= isset($post_to_edit) ? htmlspecialchars($post_to_edit['title']) : '' ?>"
-                    required>
+                    value="<?= isset($post_to_edit) ? htmlspecialchars($post_to_edit['title']) : '' ?>" required>
             </div>
 
             <div class="mb-3">
@@ -97,7 +95,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
 
             <div class="d-flex gap-2 mt-4">
-                <button type="submit" class="btn btn-primary w-100"><?= isset($post_to_edit) ? 'บันทึกการแก้ไข' : 'โพสต์' ?></button>
+                <button type="submit"
+                    class="btn btn-primary w-100"><?= isset($post_to_edit) ? 'บันทึกการแก้ไข' : 'โพสต์' ?></button>
                 <button type="button" id="cancelButton" class="btn btn-outline-danger w-100" onclick="cancelImage()"
                     <?= isset($post_to_edit) && !empty($post_to_edit['image']) ? '' : 'style="display:none;"' ?>>ยกเลิกรูปภาพ</button>
                 <button type="button" class="btn btn-outline-primary w-100" onclick="history.back()">ย้อนกลับ</button>
@@ -109,32 +108,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <?php include_once 'layouts/bottom_layouts.php'; ?>
 
 <script>
-function previewImage() {
-    const file = document.getElementById('image').files[0];
-    const preview = document.getElementById('imagePreview');
-    const reader = new FileReader();
+    function previewImage() {
+        const file = document.getElementById('image').files[0];
+        const preview = document.getElementById('imagePreview');
+        const reader = new FileReader();
 
-    reader.onloadend = function() {
-        preview.src = reader.result;
-        preview.style.display = 'block';
-        document.getElementById('cancelButton').style.display = 'inline-block';
-    };
+        reader.onloadend = function() {
+            preview.src = reader.result;
+            preview.style.display = 'block';
+            document.getElementById('cancelButton').style.display = 'inline-block';
+        };
 
-    if (file) {
-        reader.readAsDataURL(file);
-    } else {
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = "";
+            preview.style.display = 'none';
+            document.getElementById('cancelButton').style.display = 'none';
+        }
+    }
+
+    function cancelImage() {
+        const fileInput = document.getElementById('image');
+        const preview = document.getElementById('imagePreview');
+        fileInput.value = "";
         preview.src = "";
         preview.style.display = 'none';
         document.getElementById('cancelButton').style.display = 'none';
     }
-}
-
-function cancelImage() {
-    const fileInput = document.getElementById('image');
-    const preview = document.getElementById('imagePreview');
-    fileInput.value = "";
-    preview.src = "";
-    preview.style.display = 'none';
-    document.getElementById('cancelButton').style.display = 'none';
-}
 </script>

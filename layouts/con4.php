@@ -28,9 +28,9 @@ $current_page = $_GET['page'] ?? 'homepage';
 <div class="insidecon4">
     <div class="announce-widget-header d-flex align-items-center gap-2 mb-3">
         <span class="material-symbols-outlined announce-header-icon">campaign</span>
-        <h2>ประกาศ</h2>
+        <h2>ประกาศจากระบบ</h2>
     </div>
-    
+
     <div class="news-wrapper">
         <?php
         global $conn;
@@ -44,7 +44,7 @@ $current_page = $_GET['page'] ?? 'homepage';
                 header('Location: index.php?page=login');
                 exit();
             }
-            
+
             $delete_id = $_GET['delete'];
             if (is_numeric($delete_id)) {
                 // Fetch image first to delete it from disk
@@ -54,15 +54,15 @@ $current_page = $_GET['page'] ?? 'homepage';
                 if ($announce && !empty($announce['image']) && file_exists($announce['image'])) {
                     unlink($announce['image']);
                 }
-                
+
                 // Delete from DB
                 $stmt = $conn->prepare("DELETE FROM announcements WHERE announcement_id = ?");
                 $stmt->execute([$delete_id]);
-                
+
                 // Flash message
                 require_once __DIR__ . '/../config/swal_helper.php';
                 set_swal('success', 'ลบประกาศสำเร็จ!', 'ประกาศได้ถูกลบออกจากระบบเรียบร้อยแล้ว');
-                
+
                 echo '<script>window.location.href = "index.php?page=' . htmlspecialchars($current_page) . '";</script>';
                 exit();
             } else {
@@ -79,7 +79,7 @@ $current_page = $_GET['page'] ?? 'homepage';
                 $announce_id = $announce['announcement_id'];
                 $hasImage = !empty($announce['image']) && file_exists($announce['image']);
                 $cardClass = $hasImage ? 'news-card has-image d-flex flex-column' : 'news-card d-flex flex-column';
-                
+
                 echo '<div class="' . $cardClass . '">';
                 echo '<a href="index.php?page=declare_detail&post=' . $announce_id . '" target="_blank" class="news-card-link">';
                 if ($hasImage) {
