@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt = $conn->prepare($sql);
     $stmt->execute([$first_name, $last_name, $email, $role, $user_id]);
 
-    set_swal('success', 'อัปเดตข้อมูลสำเร็จ! ✅', 'ข้อมูลผู้ใช้ถูกบันทึกแล้ว');
+    set_swal('success', 'อัปเดตข้อมูลสำเร็จ!', 'ข้อมูลผู้ใช้ถูกบันทึกแล้ว');
     header('Location: index.php?page=manage_users');
     exit();
 }

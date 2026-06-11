@@ -8,12 +8,12 @@ This document describes the business domain, user roles, relational database sch
 
 This project runs entirely inside **Docker** containers. There is no XAMPP/Laragon dependency.
 
-| Service | Container Name | Notes |
-|---|---|---|
-| Nginx | `dpi_nginx` | Serves app on port `8080`, proxies PHP via FastCGI |
-| PHP 8.2-FPM | `dpi_php` | Executes all `.php` files |
-| MySQL 8.0 | `dpi_mysql` | DB host name is `mysql` (not `localhost`) |
-| phpMyAdmin | `dpi_phpmyadmin` | Accessible at port `8081` |
+| Service     | Container Name   | Notes                                              |
+| ----------- | ---------------- | -------------------------------------------------- |
+| Nginx       | `dpi_nginx`      | Serves app on port `8080`, proxies PHP via FastCGI |
+| PHP 8.2-FPM | `dpi_php`        | Executes all `.php` files                          |
+| MySQL 8.0   | `dpi_mysql`      | DB host name is `mysql` (not `localhost`)          |
+| phpMyAdmin  | `dpi_phpmyadmin` | Accessible at port `8081`                          |
 
 **DB credentials** are loaded from environment variables defined in `.env` (never hardcoded).
 The `config/server.php` uses `getenv()` to read `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS`.
@@ -25,6 +25,7 @@ The `config/server.php` uses `getenv()` to read `DB_HOST`, `DB_NAME`, `DB_USER`,
 The platform supports two roles with distinct privileges:
 
 ### 1. General User
+
 - **Capabilities:**
   - Register a new account and log in.
   - Browse all active threads or filter posts by category using Swiper slide components.
@@ -37,6 +38,7 @@ The platform supports two roles with distinct privileges:
   - Modify their profile details (first name, last name, email, avatar image, and password).
 
 ### 2. Administrator
+
 - **Capabilities:**
   - Inherits all general user capabilities.
   - Access user management console to update user details, toggle roles, or delete users.
@@ -110,6 +112,7 @@ erDiagram
 ### Table Specifications
 
 #### 1. `users`
+
 - `user_id` (INT, PK, Auto Increment)
 - `first_name` (VARCHAR)
 - `last_name` (VARCHAR)
@@ -119,11 +122,13 @@ erDiagram
 - `role` (VARCHAR): Roles like `user` or `admin`.
 
 #### 2. `categories`
+
 - `category_id` (INT, PK, Auto Increment)
 - `category_name` (VARCHAR): Name of the category.
 - `categorie_icon` (VARCHAR): Category icon filename/filepath.
 
 #### 3. `posts`
+
 - `post_id` (INT, PK, Auto Increment)
 - `title` (VARCHAR): Post title.
 - `content` (TEXT): Post content.
@@ -133,6 +138,7 @@ erDiagram
 - `created_at` (TIMESTAMP): Date and time of creation.
 
 #### 4. `comments`
+
 - `comment_id` (INT, PK, Auto Increment)
 - `post_id` (INT, FK -> `posts.post_id`)
 - `user_id` (INT, FK -> `users.user_id`): Comment author.
@@ -142,9 +148,18 @@ erDiagram
 - `updated_at` (TIMESTAMP)
 
 #### 5. `likes`
+
 - Many-to-many relationship mapping table to enforce unique likes per user per post.
 - `user_id` (INT, FK -> `users.user_id`)
 - `post_id` (INT, FK -> `posts.post_id`)
+
+#### 6. `announcements`
+
+- `announcement_id` (INT, PK, Auto Increment)
+- `title` (VARCHAR): Title of the announcement.
+- `description` (TEXT): Description of the announcement.
+- `image` (VARCHAR): Announcement image filename/filepath.
+- `created_at` (TIMESTAMP): Date and time of creation.
 
 ---
 
