@@ -117,8 +117,8 @@ Login with the pre-seeded administrator account:
 ### 6. Seeding Mock Data
 To reset and seed the database with mock categories, users, posts, and announcements (using UTC timestamps for PHP-level timezone conversion), run:
 ```bash
-docker cp db_seed.sql dpi_mysql:/db_seed.sql
-docker exec dpi_mysql mysql -u dpi_user -pdpi_password123 dpi_db -e "source /db_seed.sql"
+docker cp data/db_seed.sql dpi_mysql:/db_seed.sql
+docker exec dpi_mysql mysql -u dpi_user -pdpi_password123 --default-character-set=utf8mb4 dpi_db -e "source /db_seed.sql"
 ```
 
 ### 7. Stop Services

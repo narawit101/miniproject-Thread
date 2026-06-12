@@ -46,7 +46,7 @@ services:
       - "3307:3306"      # ใช้ 3307 เผื่อชนกับ MySQL ในเครื่อง
     volumes:
       - dpi_mysql_data:/var/lib/mysql             # เก็บข้อมูลถาวร
-      - ./db.sql:/docker-entrypoint-initdb.d/db.sql  # import DB อัตโนมัติ
+      - ./data/db.sql:/docker-entrypoint-initdb.d/db.sql  # import DB อัตโนมัติ
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASS}"]
       interval: 10s

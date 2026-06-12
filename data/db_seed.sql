@@ -1,5 +1,6 @@
 -- SQL script to seed mock data for DPI Forum (Categories, Users, Posts, Announcements)
 -- Disables foreign key checks during truncation/deletion to prevent constraints from blocking the reset
+SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- Clear all existing tables to start fresh
