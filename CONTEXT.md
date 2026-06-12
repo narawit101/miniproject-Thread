@@ -1,6 +1,12 @@
-# Project Context (`context.md`)
+# Project Context (`CONTEXT.md`)
 
 This document describes the business domain, user roles, relational database schema, and technical logic flow for the DPI Thread Forum.
+
+> [!IMPORTANT]
+> ### 🚨 Context Update Rule
+> If you implement any significant architectural modifications, database schema edits, API changes, or new backend logic flows, you **MUST** update [CONTEXT.md](file:///c:/D/thread/miniproject-Thread/CONTEXT.md) to ensure it accurately reflects the latest technical specifications.
+> 
+> **Workflow Step:** Always refer to [AGENT.md](file:///c:/D/thread/miniproject-Thread/AGENT.md) as the root developer guide and coordinator for all tasks.
 
 ---
 

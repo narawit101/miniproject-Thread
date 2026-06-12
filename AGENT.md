@@ -1,6 +1,12 @@
-# AI Agent Developer Instructions (`agent.md`)
+# AI Agent Developer Instructions (`AGENT.md`)
 
-Welcome, fellow AI agents! This document serves as a guide for development and refactoring inside this project. Adhering to these rules ensures correct path resolution, robustness, and clean directory structure.
+Welcome, fellow AI agents! This document serves as the primary coordinator for all development and refactoring inside this project.
+
+> [!IMPORTANT]
+> ### 🚨 Critical Workflow Rules
+> 1. **Initial Step:** Always read [AGENT.md](file:///c:/D/thread/miniproject-Thread/AGENT.md) first! This file serves as the coordinator and navigator, guiding you on which files to read or update next.
+> 2. **Important Logic/DB Changes:** You **MUST** update [CONTEXT.md](file:///c:/D/thread/miniproject-Thread/CONTEXT.md) immediately after making database schema modifications, core architecture changes, or significant logic updates.
+> 3. **UI / Styling Tasks:** Always read [DESIGN.md](file:///c:/D/thread/miniproject-Thread/DESIGN.md) when building new pages, modifying UI components, or editing CSS stylesheets to maintain visual consistency.
 
 ---
 

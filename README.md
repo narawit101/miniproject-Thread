@@ -146,3 +146,16 @@ $pass   = getenv('DB_PASS') ?: '';
 ```
 
 > **Note:** The host name is `mysql` (the Docker service name), not `localhost`.
+
+---
+
+## 📖 Developer Documentation Guide
+
+If you are developing or refactoring this project, please follow this documentation workflow:
+
+> [!IMPORTANT]
+> ### 🚨 Workflow & Documentation Rules
+> 1. **[AGENT.md](file:///c:/D/thread/miniproject-Thread/AGENT.md) (Root Guide & Coordinator):** Read this first to understand directory layouts, coding rules, environment configurations, and security standards. It guides you on which files to read or update next.
+> 2. **[CONTEXT.md](file:///c:/D/thread/miniproject-Thread/CONTEXT.md) (System Context):** Read to understand relational database schemas and logic flows. **You MUST update this file whenever you make important changes** to database structures or core backend logic.
+> 3. **[DESIGN.md](file:///c:/D/thread/miniproject-Thread/DESIGN.md) (Design System):** **You MUST read this whenever building new pages, UI components, or editing CSS styles** to ensure compliance with the Forest Green theme.
+
