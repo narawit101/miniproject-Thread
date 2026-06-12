@@ -16,7 +16,7 @@ $user = $stmt->fetch();
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $first_name = $_POST['first_name'];
     $last_name = $_POST['last_name'];
-    $password =$_POST['password'];
+    $password = $_POST['password'];
     $email = $_POST['email'];
 
     // อัปเดตข้อมูลผู้ใช้
@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($old_img && $old_img !== 'logo.png' && file_exists('uploads/' . $old_img)) {
             @unlink('uploads/' . $old_img);
         }
-        $default_image ='logo.png';
+        $default_image = 'logo.png';
         $stmt = $conn->prepare("UPDATE users SET user_img = ? WHERE user_id = ?");
         $stmt->execute([$default_image, $user_id]);
     }
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // กลับไปยังหน้าโปรไฟล์
-    set_swal('success', 'บันทึกสำเร็จ! ✅', 'โปรไฟล์ของคุณถูกอัปเดตแล้ว');
+    set_swal('success', 'บันทึกสำเร็จ!', 'โปรไฟล์ของคุณถูกอัปเดตแล้ว');
     header('Location: index.php?page=profile');
     exit();
 }
@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <script>
     function previewImage(event) {
         const reader = new FileReader();
-        reader.onload = function () {
+        reader.onload = function() {
             const output = document.getElementById('preview');
             output.src = reader.result;
         };
@@ -88,12 +88,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <!-- 1. รูปภาพโปรไฟล์ปัจจุบัน (แสดงเด่นชัดด้านบนสุด) -->
         <div class="mb-4 text-center">
             <?php if (!empty($user['user_img']) && file_exists('uploads/' . $user['user_img'])): ?>
-                <img src="uploads/<?php echo htmlspecialchars($user['user_img']); ?>" alt="Profile image" class="profile-picc" style="margin-bottom: 10px;">
+                <img src="uploads/<?php echo htmlspecialchars($user['user_img']); ?>" alt="Profile image"
+                    class="profile-picc" style="margin-bottom: 10px;">
                 <div class="mt-2">
-                    <button type="submit" name="delete_profile_pic" class="btn btn-outline-danger btn-sm">ลบรูปโปรไฟล์ปัจจุบัน</button>
+                    <button type="submit" name="delete_profile_pic"
+                        class="btn btn-outline-danger btn-sm">ลบรูปโปรไฟล์ปัจจุบัน</button>
                 </div>
             <?php else: ?>
-                <img src="icon/startprofile.png" alt="Default profile image" class="profile-picc" style="margin-bottom: 10px; border-color: #718096;">
+                <img src="icon/startprofile.png" alt="Default profile image" class="profile-picc"
+                    style="margin-bottom: 10px; border-color: #718096;">
             <?php endif; ?>
         </div>
 
@@ -105,8 +108,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         <div class="mb-3">
             <label for="last_name" class="form-label font-weight-bold">นามสกุล:</label>
-            <input type="text" id="last_name" name="last_name" class="form-control" value="<?= htmlspecialchars($user['last_name']) ?>"
-                required>
+            <input type="text" id="last_name" name="last_name" class="form-control"
+                value="<?= htmlspecialchars($user['last_name']) ?>" required>
         </div>
 
         <div class="mb-3">
@@ -118,9 +121,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         <div class="mb-3">
             <label for="profile_pic" class="form-label font-weight-bold">เปลี่ยนรูปโปรไฟล์:</label>
-            <input type="file" id="profile_pic" name="profile_pic" class="form-control" accept="image/*" onchange="previewImage(event)">
+            <input type="file" id="profile_pic" name="profile_pic" class="form-control" accept="image/*"
+                onchange="previewImage(event)">
             <div class="mt-3 text-center">
-                <img id="preview" src="#" alt="ตัวอย่างรูปโปรไฟล์ใหม่" class="img-thumbnail rounded-circle" style="display: none; width: 120px; height: 120px; object-fit: cover; border: 3px solid #85A947; margin: 0 auto;">
+                <img id="preview" src="#" alt="ตัวอย่างรูปโปรไฟล์ใหม่" class="img-thumbnail rounded-circle"
+                    style="display: none; width: 120px; height: 120px; object-fit: cover; border: 3px solid #85A947; margin: 0 auto;">
             </div>
         </div>
 
@@ -131,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </form>
 </div>
 <script>
-    document.getElementById('profile_pic').addEventListener('change', function (event) {
+    document.getElementById('profile_pic').addEventListener('change', function(event) {
         const preview = document.getElementById('preview');
         preview.style.display = 'block';
     });

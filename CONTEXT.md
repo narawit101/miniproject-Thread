@@ -180,8 +180,8 @@ erDiagram
 3. **Swiper Integration:**
    `layouts/category_slide.php` implements the Swiper.js layout for slide elements, which are styled using Vanilla CSS in `styles/category_slidestyle.css` and controlled using `assets/js/script.js`.
 
-4. **Database Initialization:**
-   The `db.sql` file at the project root is automatically imported by MySQL container on first run via Docker's `docker-entrypoint-initdb.d/` mechanism. No manual import step is needed.
+4. **Database Initialization & Seeding:**
+   The [db.sql](file:///c:/D/thread/miniproject-Thread/db.sql) file at the project root is automatically imported by the MySQL container on first run via Docker's `docker-entrypoint-initdb.d/` mechanism. To populate the database with mock categories, users, posts, and announcements (using UTC timestamps for PHP-level local timezone conversion), the unified [db_seed.sql](file:///c:/D/thread/miniproject-Thread/db_seed.sql) script should be executed as detailed in [AGENT.md](file:///c:/D/thread/miniproject-Thread/AGENT.md).
 
 5. **Environment Variables:**
    All sensitive configuration (DB credentials) is stored in `.env` and injected into containers by Docker Compose. PHP reads them via `getenv()` in `config/server.php`.

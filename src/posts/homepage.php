@@ -53,7 +53,8 @@ $popular_posts = $stmt_popular->fetchAll();
 
     <!-- Welcome Banner -->
     <div class="item layoutofcon1 text-center" style="padding: 15px 20px;">
-        <img src="icon/Illustration.png" alt="Welcome to DPI Forum" style="max-width: 100%; max-height: 110px; height: auto; object-fit: contain;">
+        <img src="icon/Illustration.png" alt="Welcome to DPI Thread"
+            style="max-width: 100%; max-height: 110px; height: auto; object-fit: contain;">
     </div>
 
     <div class="item layoutofcon1">
@@ -79,7 +80,8 @@ $popular_posts = $stmt_popular->fetchAll();
                     <img src="<?= $user_img_path ?>" alt="User Image" class="user-image">
                     <div>
                         <p class="user-name">
-                            <strong><?= htmlspecialchars($post['first_name']) ?> <?= htmlspecialchars($post['last_name']) ?></strong>
+                            <strong><?= htmlspecialchars($post['first_name']) ?>
+                                <?= htmlspecialchars($post['last_name']) ?></strong>
                         </p>
                         <span class="post-time"><?= formatThaiDate($post['created_at']) ?></span>
                     </div>
@@ -161,8 +163,8 @@ $popular_posts = $stmt_popular->fetchAll();
                     <ul class="comment-list" data-post-id="<?= $post_id ?>" style="display: none;">
                         <?php foreach ($comments as $comment): ?>
                             <li class="comment-item">
-                                    <div class="comment-header">
-                                        <div class="comment-user-info">
+                                <div class="comment-header">
+                                    <div class="comment-user-info">
                                         <?php
                                         // ดึงรูปผู้ใช้
                                         if (!empty($comment['user_img']) && file_exists('uploads/' . $comment['user_img'])):
@@ -184,10 +186,11 @@ $popular_posts = $stmt_popular->fetchAll();
 
                                 <!-- เนื้อหาคอมเมนต์ -->
                                 <div class="comment-body">
-                                        <?php if (!empty($comment['image'])): ?>
-                                            <!-- รูปในคอมเมนต์ -->
-                                            <img src="uploads/<?= htmlspecialchars($comment['image']) ?>" alt="รูปคอมเมนต์" class="comment-img">
-                                        <?php endif; ?>
+                                    <?php if (!empty($comment['image'])): ?>
+                                        <!-- รูปในคอมเมนต์ -->
+                                        <img src="uploads/<?= htmlspecialchars($comment['image']) ?>" alt="รูปคอมเมนต์"
+                                            class="comment-img">
+                                    <?php endif; ?>
 
                                     <!-- เนื้อหาคอมเมนต์ -->
                                     <p class="comment-content"><?= htmlspecialchars($comment['content']) ?></p>
@@ -197,7 +200,7 @@ $popular_posts = $stmt_popular->fetchAll();
                     </ul>
                 <?php else: ?>
                     <p class="text-muted">ยังไม่มีคอมเมนต์</p>
-                    <?php endif; ?>
+                <?php endif; ?>
                 <!-- ปุ่ม -->
                 <?php if ($post['user_id'] == $_SESSION['user_id'] || $_SESSION['role'] == 'admin'): ?>
                     <!-- ปุ่มแก้ไขโพสต์ -->

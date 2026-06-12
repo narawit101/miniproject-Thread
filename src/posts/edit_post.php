@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt = $conn->prepare($sql);
 
     if ($stmt->execute($params)) {
-        set_swal('success', 'แก้ไขสำเร็จ! ✅', 'กระทู้ของคุณถูกอัปเดตแล้ว');
+        set_swal('success', 'แก้ไขสำเร็จ!', 'กระทู้ของคุณถูกอัปเดตแล้ว');
         header("Location: index.php?page=post&post_id=$post_id");
         exit();
     } else {
@@ -127,24 +127,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <!-- แสดงรูปภาพปัจจุบันและให้ตัวเลือกในการลบ -->
             <div class="mb-3">
                 <?php if (!empty($post['post_img'])): ?>
-                <div class="mb-2">
-                    <?php
-                    $post_img_path = 'uploads/posts/' . $post['post_img'];
-                    if (!file_exists($post_img_path) && file_exists('uploads/' . $post['post_img'])) {
-                        $post_img_path = 'uploads/' . $post['post_img'];
-                    }
-                    ?>
-                    <img id="preview" src="<?= htmlspecialchars($post_img_path) ?>"
-                        alt="รูปภาพที่อัปโหลด" class="img-thumbnail post-create-preview">
-                    <input type="hidden" name="delete_image" id="delete_image" value="0">
-                    <button type="button" class="btn btn-sm btn-outline-danger mt-2 d-block"
-                        onclick="deleteImage()">ลบรูปภาพนี้</button>
-                </div>
+                    <div class="mb-2">
+                        <?php
+                        $post_img_path = 'uploads/posts/' . $post['post_img'];
+                        if (!file_exists($post_img_path) && file_exists('uploads/' . $post['post_img'])) {
+                            $post_img_path = 'uploads/' . $post['post_img'];
+                        }
+                        ?>
+                        <img id="preview" src="<?= htmlspecialchars($post_img_path) ?>"
+                            alt="รูปภาพที่อัปโหลด" class="img-thumbnail post-create-preview">
+                        <input type="hidden" name="delete_image" id="delete_image" value="0">
+                        <button type="button" class="btn btn-sm btn-outline-danger mt-2 d-block"
+                            onclick="deleteImage()">ลบรูปภาพนี้</button>
+                    </div>
                 <?php else: ?>
-                <div class="mb-2">
-                    <img id="preview" src="#" alt="ตัวอย่างรูปภาพ" class="img-thumbnail post-create-preview"
-                        style="display: none;">
-                </div>
+                    <div class="mb-2">
+                        <img id="preview" src="#" alt="ตัวอย่างรูปภาพ" class="img-thumbnail post-create-preview"
+                            style="display: none;">
+                    </div>
                 <?php endif; ?>
             </div>
 
@@ -160,10 +160,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <select id="category_id" name="category_id" class="form-select" required>
                     <option value="">เลือกหมวดหมู่</option>
                     <?php foreach ($categories as $category): ?>
-                    <option value="<?= $category['category_id'] ?>"
-                        <?= ($category['category_id'] == $post['category_id']) ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($category['category_name']) ?>
-                    </option>
+                        <option value="<?= $category['category_id'] ?>"
+                            <?= ($category['category_id'] == $post['category_id']) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($category['category_name']) ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -179,38 +179,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <?php include_once 'layouts/bottom_layouts.php'; ?>
 
 <script>
-// ฟังก์ชันพรีวิวรูปภาพ
-function previewImage(event) {
-    const reader = new FileReader();
-    reader.onload = function() {
-        const output = document.getElementById('preview');
-        output.src = reader.result;
-        output.style.display = 'block';
-    }
-    reader.readAsDataURL(event.target.files[0]);
-}
-
-// ฟังก์ชันลบรูปภาพ
-function deleteImage() {
-    Swal.fire({
-        title: 'ลบรูปภาพนี้?',
-        text: 'คุณแน่ใจหรือว่าต้องการลบรูปภาพนี้?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#e53e3e',
-        cancelButtonColor: '#718096',
-        confirmButtonText: 'ลบ',
-        cancelButtonText: 'ยกเลิก',
-    }).then(function(result) {
-        if (result.isConfirmed) {
-            document.getElementById('delete_image').value = '1';
-            document.getElementById('preview').style.display = 'none';
+    // ฟังก์ชันพรีวิวรูปภาพ
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function() {
+            const output = document.getElementById('preview');
+            output.src = reader.result;
+            output.style.display = 'block';
         }
-    });
-}
+        reader.readAsDataURL(event.target.files[0]);
+    }
 
-// ฟังก์ชันย้อนกลับ
-function goBack() {
-    window.history.back();
-}
+    // ฟังก์ชันลบรูปภาพ
+    function deleteImage() {
+        Swal.fire({
+            title: 'ลบรูปภาพนี้?',
+            text: 'คุณแน่ใจหรือว่าต้องการลบรูปภาพนี้?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e53e3e',
+            cancelButtonColor: '#718096',
+            confirmButtonText: 'ลบ',
+            cancelButtonText: 'ยกเลิก',
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                document.getElementById('delete_image').value = '1';
+                document.getElementById('preview').style.display = 'none';
+            }
+        });
+    }
+
+    // ฟังก์ชันย้อนกลับ
+    function goBack() {
+        window.history.back();
+    }
 </script>

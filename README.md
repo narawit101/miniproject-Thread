@@ -53,7 +53,8 @@ miniproject-Thread/
 ├── docker-compose.yml         # Docker Compose: Nginx + PHP-FPM + MySQL + phpMyAdmin
 ├── .env                       # Environment variables (DB credentials — not committed)
 ├── .env.example               # Template for .env file
-├── db.sql                     # Database initialization script (auto-imported by Docker)
+├── db.sql                     # Database schema definition script (auto-imported by Docker)
+├── db_seed.sql                # Unified database seeding script (resets and inserts mock data)
 ├── index.php                  # Central Router (Single entry point)
 ├── README.md                  # Project overview and setup guide
 ├── AGENT.md                   # AI developer guidelines and coding instructions
@@ -113,7 +114,14 @@ Login with the pre-seeded administrator account:
 - **Email:** `admin@gmail.com`
 - **Password:** `123456`
 
-### 6. Stop Services
+### 6. Seeding Mock Data
+To reset and seed the database with mock categories, users, posts, and announcements (using UTC timestamps for PHP-level timezone conversion), run:
+```bash
+docker cp db_seed.sql dpi_mysql:/db_seed.sql
+docker exec dpi_mysql mysql -u dpi_user -pdpi_password123 dpi_db -e "source /db_seed.sql"
+```
+
+### 7. Stop Services
 ```bash
 docker compose down
 

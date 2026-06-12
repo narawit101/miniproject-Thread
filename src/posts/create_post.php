@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if ($stmt->execute($params)) {
-        set_swal('success', 'โพสต์สำเร็จ! 🎉', 'กระทู้ของคุณถูกสร้างแล้ว');
+        set_swal('success', 'โพสต์สำเร็จ!', 'กระทู้ของคุณถูกสร้างแล้ว');
         header('Location: index.php?page=all_feed');
         exit();
     } else {
@@ -102,12 +102,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 </div>
 
-<?php include_once 'layouts/bottom_layouts.php';?>
+<?php include_once 'layouts/bottom_layouts.php'; ?>
 
 <script>
     function previewImage(event) {
         const reader = new FileReader();
-        reader.onload = function () {
+        reader.onload = function() {
             const output = document.getElementById('preview');
             output.src = reader.result;
             output.style.display = 'block';
@@ -129,7 +129,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (!result.isConfirmed) return;
             const formData = new FormData(document.getElementById('postForm'));
             formData.append('delete_image', '1');
-            fetch('index.php?page=create_post', { method: 'POST', body: formData })
+            fetch('index.php?page=create_post', {
+                    method: 'POST',
+                    body: formData
+                })
                 .then(r => r.json())
                 .then(data => {
                     if (data.status === 'success') {

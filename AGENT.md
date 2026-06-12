@@ -23,6 +23,17 @@ This project runs inside **Docker** — there is no XAMPP, Laragon, or any local
 
 > ⚠️ **Critical:** The database host is `mysql` (Docker service name), **NOT** `localhost`.
 
+### 🗄️ Database Initialization & Seeding
+The database schema and mock data are managed via SQL files:
+- **[db.sql](file:///c:/D/thread/miniproject-Thread/db.sql)**: Defines the database schema, table structures, relationships, and inserts the default admin user.
+- **[db_seed.sql](file:///c:/D/thread/miniproject-Thread/db_seed.sql)**: A unified database seeding script that resets and populates all tables with 10 categories (using Material Symbols), 10 mock users, 10 distinct posts, and 5 announcements. The timestamps are stored in UTC to align with the PHP application's timezone conversion logic.
+
+To seed the database with mock data, run the following commands:
+```powershell
+docker cp db_seed.sql dpi_mysql:/db_seed.sql
+docker exec dpi_mysql mysql -u dpi_user -pdpi_password123 dpi_db -e "source /db_seed.sql"
+```
+
 ### DB Configuration Rule
 - **Never hardcode** database credentials in PHP files.
 - Always read from environment variables using `getenv()`:

@@ -82,7 +82,8 @@ include_once 'layouts/top_layouts.php';
                 <img src="<?= $user_img_path ?>" alt="User Image">
                 <div>
                     <p class="user-name">
-                        <strong><?= htmlspecialchars($post['first_name']) ?> <?= htmlspecialchars($post['last_name']) ?></strong>
+                        <strong><?= htmlspecialchars($post['first_name']) ?>
+                            <?= htmlspecialchars($post['last_name']) ?></strong>
                     </p>
                     <span class="post-time"><?= formatThaiDate($post['created_at']) ?></span>
                 </div>
@@ -96,13 +97,13 @@ include_once 'layouts/top_layouts.php';
 
             <!-- สิ้นสุดรูปกับโพส -->
             <?php if (!empty($post['post_img'])): ?>
-                <?php
+            <?php
                 $post_img_path = 'uploads/' . $post['post_img'];
                 if (file_exists('uploads/posts/' . $post['post_img'])) {
                     $post_img_path = 'uploads/posts/' . $post['post_img'];
                 }
                 ?>
-                <img src="<?= htmlspecialchars($post_img_path) ?>" alt="Post Image" class="post-img">
+            <img src="<?= htmlspecialchars($post_img_path) ?>" alt="Post Image" class="post-img">
             <?php endif; ?>
             <!-- ฟอร์มสำหรับตอบคอมเมนต์ -->
             <form method="POST" action="" class="comment-form" enctype="multipart/form-data">
@@ -112,7 +113,8 @@ include_once 'layouts/top_layouts.php';
                 <!-- ฟิลด์สำหรับคอมเมนต์ -->
 
                 <label for="image" class="form-label mt-2">อัปโหลดรูปภาพ (ถ้ามี):</label>
-                <input type="file" name="image" id="image" class="form-control" accept="image/*" onchange="previewImage(event)">
+                <input type="file" name="image" id="image" class="form-control" accept="image/*"
+                    onchange="previewImage(event)">
                 <!-- ฟิลด์สำหรับอัปโหลดรูปภาพ -->
 
                 <!-- ส่วนพรีวิวรูปภาพ -->
@@ -125,7 +127,7 @@ include_once 'layouts/top_layouts.php';
                     </div>
                 </div>
 
-                <div class="d-flex gap-2 mt-3">
+                <div class="d-flex gap-2 mt-3 ">
                     <button type="submit" class="btn btn-primary">โพสต์คอมเมนต์</button>
                     <!-- ปุ่มย้อนกลับไปหน้าก่อนหน้า -->
                     <button type="button" class="btn btn-outline-primary" onclick="customBack()">ย้อนกลับ</button>
@@ -141,15 +143,17 @@ include_once 'layouts/top_layouts.php';
                         <!-- แสดงรูปโปรไฟล์ของผู้ที่คอมเมนต์ -->
                         <div class="comment-user-info">
                             <?php
-                            if (!empty($comment['user_img']) && file_exists('uploads/' . $comment['user_img'])):
-                                $comment_user_img_path = 'uploads/' . htmlspecialchars($comment['user_img']);
-                            else:
-                                $comment_user_img_path = 'icon/startprofile.png';
-                            endif;
-                            ?>
-                            <img src="<?= $comment_user_img_path ?>" alt="User Image" class="comment-avatar" style="width: 40px; height: 40px;">
+                                    if (!empty($comment['user_img']) && file_exists('uploads/' . $comment['user_img'])):
+                                        $comment_user_img_path = 'uploads/' . htmlspecialchars($comment['user_img']);
+                                    else:
+                                        $comment_user_img_path = 'icon/startprofile.png';
+                                    endif;
+                                    ?>
+                            <img src="<?= $comment_user_img_path ?>" alt="User Image" class="comment-avatar"
+                                style="width: 40px; height: 40px;">
                             <div>
-                                <strong class="comment-author"><?= htmlspecialchars($comment['first_name']) . ' ' . htmlspecialchars($comment['last_name']) ?></strong>
+                                <strong
+                                    class="comment-author"><?= htmlspecialchars($comment['first_name']) . ' ' . htmlspecialchars($comment['last_name']) ?></strong>
                                 <p class="comment-date">
                                     <?= formatThaiDate($comment['created_at']) ?>
                                 </p>
@@ -159,7 +163,8 @@ include_once 'layouts/top_layouts.php';
                     <div class="comment-body">
                         <!-- รูปภาพในคอมเมนต์ -->
                         <?php if (!empty($comment['image'])): ?>
-                        <img src="uploads/<?= htmlspecialchars($comment['image']) ?>" alt="Comment Image" class="comment-img">
+                        <img src="uploads/<?= htmlspecialchars($comment['image']) ?>" alt="Comment Image"
+                            class="comment-img">
                         <?php endif; ?>
 
                         <!-- เนื้อหาคอมเมนต์ -->
@@ -173,9 +178,10 @@ include_once 'layouts/top_layouts.php';
                         <?php if (isset($_SESSION['user_id'])): ?>
                         <?php if ($_SESSION['user_id'] == $comment['user_id'] || $_SESSION['role'] == 'admin'): ?>
                         <div class="comment-actions">
-                            <a href="index.php?page=edit_comment&comment_id=<?= $comment['comment_id'] ?>&post_id=<?= $post_id ?>" class="edit">แก้ไข</a>
-                            <a href="index.php?page=delete_comment&comment_id=<?= $comment['comment_id'] ?>&post_id=<?= $post_id ?>" class="delete"
-                                data-confirm="ยืนยันการลบความคิดเห็นนี้?">ลบ</a>
+                            <a href="index.php?page=edit_comment&comment_id=<?= $comment['comment_id'] ?>&post_id=<?= $post_id ?>"
+                                class="edit">แก้ไข</a>
+                            <a href="index.php?page=delete_comment&comment_id=<?= $comment['comment_id'] ?>&post_id=<?= $post_id ?>"
+                                class="delete" data-confirm="ยืนยันการลบความคิดเห็นนี้?">ลบ</a>
                         </div>
                         <?php endif; ?>
                         <?php endif; ?>
@@ -196,40 +202,40 @@ include_once 'layouts/top_layouts.php';
 </div>
 
 <?php include_once 'layouts/bottom_layouts.php'; ?>
-    <script>
-    // ฟังก์ชันล้างข้อมูลรูปภาพ
-    function clearImage() {
-        const imageInput = document.getElementById('image');
-        const imagePreviewContainer = document.getElementById('image-preview-container');
-        const imagePreview = document.getElementById('image-preview');
+<script>
+// ฟังก์ชันล้างข้อมูลรูปภาพ
+function clearImage() {
+    const imageInput = document.getElementById('image');
+    const imagePreviewContainer = document.getElementById('image-preview-container');
+    const imagePreview = document.getElementById('image-preview');
 
-        imageInput.value = ''; // ล้างข้อมูลใน input
-        imagePreview.src = '#'; // ล้างข้อมูลพรีวิวรูปภาพ
-        imagePreviewContainer.style.display = 'none'; // ซ่อน container ของพรีวิวรูปภาพ
-    }
+    imageInput.value = ''; // ล้างข้อมูลใน input
+    imagePreview.src = '#'; // ล้างข้อมูลพรีวิวรูปภาพ
+    imagePreviewContainer.style.display = 'none'; // ซ่อน container ของพรีวิวรูปภาพ
+}
 
-    // ฟังก์ชันแสดงพรีวิวรูปภาพ
-    function previewImage(event) {
-        const imagePreviewContainer = document.getElementById('image-preview-container');
-        const imagePreview = document.getElementById('image-preview');
-        const file = event.target.files[0];
+// ฟังก์ชันแสดงพรีวิวรูปภาพ
+function previewImage(event) {
+    const imagePreviewContainer = document.getElementById('image-preview-container');
+    const imagePreview = document.getElementById('image-preview');
+    const file = event.target.files[0];
 
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                imagePreview.src = e.target.result; // ตั้งค่า src ของพรีวิวรูปภาพ
-                imagePreviewContainer.style.display = 'block'; // แสดง container ของพรีวิวรูปภาพ
-            }
-            reader.readAsDataURL(file);
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            imagePreview.src = e.target.result; // ตั้งค่า src ของพรีวิวรูปภาพ
+            imagePreviewContainer.style.display = 'block'; // แสดง container ของพรีวิวรูปภาพ
         }
+        reader.readAsDataURL(file);
     }
+}
 
-    function customBack() {
-        const previousURL = "<?php echo $_SESSION['previous_page']; ?>";
-        if (previousURL.includes('edit_comment')) {
-            window.location.href = 'index.php?page=all_feed'; // เปลี่ยนเส้นทางไปยัง all_feed.php
-        } else {
-            window.location.href = previousURL; // ย้อนกลับไปหน้าก่อนหน้า
-        }
+function customBack() {
+    const previousURL = "<?php echo $_SESSION['previous_page']; ?>";
+    if (previousURL.includes('edit_comment')) {
+        window.location.href = 'index.php?page=all_feed'; // เปลี่ยนเส้นทางไปยัง all_feed.php
+    } else {
+        window.location.href = previousURL; // ย้อนกลับไปหน้าก่อนหน้า
     }
-    </script>
+}
+</script>

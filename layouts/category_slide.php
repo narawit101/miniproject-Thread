@@ -15,10 +15,23 @@ $categories = $stmt_cat->fetchAll(PDO::FETCH_ASSOC);
         <div class="categry-list swiper-wrapper">
             <?php foreach ($categories as $category): ?>
                 <div class="category-item swiper-slide">
-                    <?php if (!empty($category['categorie_icon']) && file_exists($category['categorie_icon'])): ?>
-                        <img src="<?= htmlspecialchars($category['categorie_icon']) ?>"
+                    <?php 
+                    $icon = $category['categorie_icon'] ?? '';
+                    $isUrl = (strpos($icon, 'http://') === 0 || strpos($icon, 'https://') === 0);
+                    $isFile = (!empty($icon) && !$isUrl && file_exists($icon));
+                    
+                    if ($isUrl): ?>
+                        <img src="<?= htmlspecialchars($icon) ?>"
                              alt="<?= htmlspecialchars($category['category_name']) ?>"
                              class="category-img">
+                    <?php elseif ($isFile): ?>
+                        <img src="<?= htmlspecialchars($icon) ?>"
+                             alt="<?= htmlspecialchars($category['category_name']) ?>"
+                             class="category-img">
+                    <?php elseif (!empty($icon) && !preg_match('/[\/\.]/', $icon)): // Material Icon name (no slashes or dots) ?>
+                        <div class="category-icon-wrapper">
+                            <span class="material-symbols-outlined category-material-icon"><?= htmlspecialchars($icon) ?></span>
+                        </div>
                     <?php else: ?>
                         <div class="category-img-placeholder">🗂️</div>
                     <?php endif; ?>
